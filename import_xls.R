@@ -12,14 +12,3 @@ sumMissingCases <- sum(is.na(df_srl))
 # create data frame without missings
 df_srl_na <- na.omit(df_srl)
 View(df_srl_na)
-
-# recode char likert statements to num
-require(dplyr)
-
-df_srl_na_rec <- as.numeric(mutate_all(
-  df_srl_na, .funs = 
-"trifft überhaupt nicht auf mich zu" = 1,
-"trifft manchmal auf mich zu" = 2,
-"trifft eher auf mich zu" = 3,
-"trifft auf mich zu" = 4,
-"trifft sehr auf mich zu" = 5))
