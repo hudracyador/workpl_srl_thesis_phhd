@@ -10,3 +10,6 @@ head(my_packages, 10)
 
 # We can unload packages that are no longe needed
 unloadNamespace("tidyr")
+
+# empty Workspace
+rm(list = ls())
