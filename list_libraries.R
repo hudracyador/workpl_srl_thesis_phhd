@@ -13,3 +13,9 @@ unloadNamespace("tidyr")
 
 # empty Workspace
 rm(list = ls())
+
+# find out classes of specific data fram
+sapply(subset_se, class)
+
+# see dimensions of data set
+dim(subset_se)
