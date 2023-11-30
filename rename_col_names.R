@@ -1,4 +1,5 @@
 # rename col descriptions to shorter and usable variable names
+require(dplyr)
 df_srl_na_col <- rename(
   df_srl_na,
   PD_01_age = "In welcher Altersgruppe befindest du dich?",
@@ -62,7 +63,7 @@ df_srl_na_col <- rename(
   SRL_SR_59_things_learned_team = "Ich überlege, wie sich das, was ich gelernt habe, auf mein Team bezieht",
   SRL_SR_60_new_info_impact = "Ich versuche zu verstehen, wie sich neue Informationen, die ich gelernt habe, auf meine Arbeit auswirken",
   WLC_61_job_creative = "Mein Job verlangt von mir, kreativ zu sein",
-  WLC_62_choose_assignments = "Ich kann mir meine Arbeitsaufgaben aussuchen",
+  WLC_62 = "Ich kann mir meine Arbeitsaufgaben aussuchen",
   WLC_63_spec_abilities = "Ich habe die Möglichkeit, meine eigenen besonderen Fähigkeiten zu entwickeln",
   WLC_64_vary_ways_work = "Ich kann variieren, auf welche Art und Weise ich meine Arbeit erledige",
   WLC_65_high_degr_competency = "Mein Job erfordert ein hohes Maß an Kompetenz",
