@@ -8,14 +8,17 @@ head(my_packages, 10)
 # We can list the libraries that are actually loaded doing
 (.packages())
 
-# We can unload packages that are no longe needed
+# We can unload packages that are no longer needed
 unloadNamespace("tidyr")
 
-# empty Workspace
+# Empty Workspace
 rm(list = ls())
 
-# find out classes of specific data fram
-sapply(subset_se, class)
+# Find out classes of specific data frame
+sapply(df_srl_na_col, class)
 
-# see dimensions of data set
+# See dimensions of data set
 dim(subset_se)
+
+# Library for cleaning code
+library(tidyr)
