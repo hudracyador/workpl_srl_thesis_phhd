@@ -1,27 +1,36 @@
 # wla subset
-subset_wla <- clean_recoded |> select(c(starts_with("wla"),))
+subset_wla <- df_srl_na_col_rec |> select(c(starts_with("wla"),))
 View(subset_wla)
 
 # srl subset
-subset_srl <- clean_recoded |> select(c(starts_with("srl"),))
+subset_srl <- df_srl_na_col_rec |> select(c(starts_with("srl"),))
 View(subset_srl)
 
 # srl_f subset
-subset_srl_f <- clean_recoded |> select(c(starts_with("srl_f"),))
+subset_srl_f <- df_srl_na_col_rec |> select(c(starts_with("srl_f"),))
 View(subset_srl_f)
 
 # srl_p subset
-subset_srl_p <- clean_recoded |> select(c(starts_with("srl_p"),))
+subset_srl_p <- df_srl_na_col_rec |> select(c(starts_with("srl_p"),))
 View(subset_srl_p)
 
 # srl_sr subset
-subset_srl_sr <- clean_recoded |> select(c(starts_with("srl_sr"),))
+subset_srl_sr <- df_srl_na_col_rec |> select(c(starts_with("srl_sr"),))
 View(subset_srl_sr)
 
 # wlc subset
-subset_wlc <- clean_recoded |> select(c(starts_with("wlc"),))
+subset_wlc <- df_srl_na_col_rec |> select(c(starts_with("wlc"),))
 View(subset_wlc)
 
 # se subset
-subset_se <- clean_recoded |> select(c(starts_with("se"),))
+subset_se <- df_srl_na_col_rec |> select(c(starts_with("se"),))
 View(subset_se)
+
+
+# Descriptive check of subsets
+summary(subset_se)
+summary(subset_srl_f)
+summary(subset_srl_p)
+summary(subset_srl_sr)
+summary(subset_wla)
+summary(subset_wlc)
