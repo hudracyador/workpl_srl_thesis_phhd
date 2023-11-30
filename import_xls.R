@@ -5,10 +5,20 @@ df_srl <- read_excel("01_20231123_srlwq_deu.xlsx",
                      na = "NA")
 View(df_srl)
 
+# Save a duplicate of the original data set for later
+df_srl_duplicate <- df_srl
+
+# See, if all 76 columns are present in the imported data set
+ncol(df_srl)
+
 # Identify all missings in the data frame
 missingCases <- which(is.na(df_srl)==TRUE)
 sumMissingCases <- sum(is.na(df_srl))
 
-# create data frame without missings
+# Create data frame without missings
 df_srl_na <- na.omit(df_srl)
 View(df_srl_na)
+
+# Determine sample size
+sample_size <- nrow(df_srl_na)
+sample_size
