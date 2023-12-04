@@ -22,3 +22,6 @@ dim(subset_se)
 
 # Library for cleaning code
 library(tidyr)
+
+# Library for throwing errors, when there are conflicting functions
+library(conflicted)
