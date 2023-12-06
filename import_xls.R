@@ -15,6 +15,9 @@ ncol(df_srl)
 missingCases <- which(is.na(df_srl)==TRUE)
 sumMissingCases <- sum(is.na(df_srl))
 
+# Create data frame with only missings
+df_srl_just_na <- df_srl[rowSums(is.na(df_srl)) > 0,]
+
 # Create data frame without missings
 df_srl_na <- na.omit(df_srl)
 View(df_srl_na)
