@@ -80,6 +80,8 @@ df_srl_na_col <- rename(
   SE_75_work_team_easy = "Wenn ich von zuhause aus arbeite, kann ich problemlos in einem Team arbeiten",
 )
 
+# Check col names in console
+names(df_srl_na_col)
 
-
+# Check col names in data frame View
 View(df_srl_na_col)
