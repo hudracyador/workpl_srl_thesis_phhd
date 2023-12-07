@@ -8,11 +8,11 @@ df_srl_na_col$PD_04_work_yrs <- as.numeric (
     )
   )
 
-df_srl_na_col$PD_07_ho_amount <- as.numeric (
-  as.character(
-    df_srl_na_col$PD_07_ho_amount
-  )
-)
+# df_srl_na_col$PD_07_ho_amount <- as.numeric (
+#  as.character(
+#    df_srl_na_col$PD_07_ho_amount
+#  )
+# )
 
 View(df_srl_na_col)
 
