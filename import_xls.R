@@ -1,7 +1,7 @@
 # Import the fully prepared xlsx file into RStudio
 require(readxl)
-df_srl <- read_excel("01_20231123_srlwq_deu.xlsx", 
-                     sheet = "Tabelle1", range = "A1:BX117", 
+df_srl <- read_excel("02_20231207_srlwq_deu.xlsx", 
+                     sheet = "Tabelle1", range = "A1:BX133", 
                      na = "NA")
 View(df_srl)
 
@@ -10,6 +10,11 @@ df_srl_duplicate <- df_srl
 
 # See, if all 76 columns are present in the imported data set
 ncol(df_srl)
+
+# See, if all 132 rows are present in the imported data set
+# Original file has 133 rows, the import makes the first row header
+# so does not count
+nrow(df_srl)
 
 # Identify all missings in the data frame
 missingCases <- which(is.na(df_srl)==TRUE)
