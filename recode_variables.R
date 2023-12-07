@@ -2,11 +2,11 @@ require(dplyr)
 require(scales)
 
 # Convert work years from <chr> to <num>
-df_srl_na_col$PD_04_work_yrs <- as.numeric (
+df_srl_na_col$PD_04_work_yrs <- as.numeric(
   as.character(
     df_srl_na_col$PD_04_work_yrs
-    )
   )
+)
 
 # df_srl_na_col$PD_07_ho_amount <- as.numeric (
 #  as.character(
@@ -23,6 +23,22 @@ sapply(df_srl_na_col$PD_07_ho_amount, class)
 # Recode variables
 df_srl_na_col_rec <- df_srl_na_col |>
   mutate(
+    across(
+      contains("ho_amount"),
+      ~ case_when(
+        . == '0 %' ~ 0,
+        . == '10 %' ~ 0.1,
+        . == '20 %' ~ 0.2,
+        . == '30 %' ~ 0.3,
+        . == '40 %' ~ 0.4,
+        . == '50 %' ~ 0.5,
+        . == '60 %' ~ 0.6,
+        . == '70 %' ~ 0.7,
+        . == '80 %' ~ 0.8,
+        . == '90 %' ~ 0.9,
+        . == '100 %' ~ 1,
+      )
+    ),
     across(
       contains("age"),
       ~ case_when(
@@ -119,4 +135,15 @@ df_srl_na_col_rec <- df_srl_na_col |>
     )
   )
 
+sapply(df_srl_na_col$PD_07_ho_amount, class)
 View(df_srl_na_col_rec)
+
+df_srl_na_col_rec$PD_07_ho_amount <- label_percent(
+  accuracy = NULL,
+  scale = 100,
+  prefix = "",
+  suffix = "%",
+  big.mark = " ",
+  decimal.mark = ".",
+  trim = TRUE,
+)
