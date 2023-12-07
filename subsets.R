@@ -1,5 +1,5 @@
 # wla subset
-subset_wla <- df_srl_na_col_rec |> select(c(starts_with("wla"),))
+subset_wla <- df_srl_na_col_rec |> select(c(starts_with("WLA"),))
 View(subset_wla)
 
 # srl subset
@@ -26,6 +26,14 @@ View(subset_wlc)
 subset_se <- df_srl_na_col_rec |> select(c(starts_with("se"),))
 View(subset_se)
 
+
+# Descriptive check of subsets
+describe(subset_se)
+describe(subset_srl_f)
+describe(subset_srl_p)
+describe(subset_srl_sr)
+describe(subset_wla)
+describe(subset_wlc)
 
 # Descriptive check of subsets
 summary(subset_se)

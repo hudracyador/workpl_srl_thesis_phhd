@@ -2,9 +2,10 @@
 require(dplyr)
 df_srl_na_col <- rename(
   df_srl_na,
+  PD_00_ID = "ID",
   PD_01_age = "In welcher Altersgruppe befindest du dich?",
   PD_02_gender = "Welchem Geschlecht fühlst du dich zugehörig?",
-  PD_03_empl = "In welchem Teil der DSVGruppe arbeitest du derzeit?",
+  PD_03_employer = "In welchem Teil der DSVGruppe arbeitest du derzeit?",
   PD_04_work_yrs = "Wie viele Jahre bist du bereits bei deinem jetzigen Arbeitgeber innerhalb der DSVGruppe tätig?",
   PD_05_work_hrs = "Welche Erwerbssituation trifft auf dich zu?",
   PD_06_leader = "Bist du in einer fachlichen oder disziplinarischen Führungsposition?",
@@ -79,6 +80,8 @@ df_srl_na_col <- rename(
   SE_75_work_team_easy = "Wenn ich von zuhause aus arbeite, kann ich problemlos in einem Team arbeiten",
 )
 
+# Check col names in console
+names(df_srl_na_col)
 
-
+# Check col names in data frame View
 View(df_srl_na_col)
