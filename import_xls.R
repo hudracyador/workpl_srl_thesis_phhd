@@ -24,7 +24,8 @@ sumMissingCases <- sum(is.na(df_srl))
 df_srl_just_na <- df_srl[rowSums(is.na(df_srl)) > 0,]
 
 # Create data frame without missings
-df_srl_na <- na.omit(df_srl)
+# df_srl_na <- na.omit(df_srl)
+df_srl_na <- df_srl
 View(df_srl_na)
 
 # Determine sample size
