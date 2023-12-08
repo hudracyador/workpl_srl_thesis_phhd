@@ -1,5 +1,5 @@
 # rename col descriptions to shorter and usable variable names
-require(dplyr)
+library(dplyr)
 df_srl_na_col <- rename(
   df_srl_na,
   PD_00_ID = "ID",

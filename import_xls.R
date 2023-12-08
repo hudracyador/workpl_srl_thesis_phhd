@@ -1,5 +1,5 @@
 # Import the fully prepared xlsx file into RStudio
-require(readxl)
+library(readxl)
 df_srl <- read_excel("02_20231207_srlwq_deu.xlsx", 
                      sheet = "Tabelle1", range = "A1:BX133", 
                      na = "NA")

@@ -26,9 +26,9 @@ View(df_srl_na_col_rec_no_na)
 #  df_srl_destr_missings[rowSums(is.na(df_srl_destr_missings)) > 0, ]
 # View(df_srl_destr_missings_just_na)
 
-# 
-require(missMethods)
-require(dplyr)
+# Impute missings in all scales after cols 1:8 with mean method
+library(missMethods)
+library(dplyr)
 df_srl_imp_mean <- impute_mean(df_srl_na_col_rec_no_na[,9:76])
 df_srl_imp_mean <- bind_cols(df_srl_na_col_rec_no_na[,1:8], df_srl_imp_mean)
 View(df_srl_imp_mean)
