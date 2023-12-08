@@ -1,31 +1,31 @@
 library(dplyr)
 
 # wla subset
-subset_wla <- df_srl_na_col_rec |> select(c(starts_with("WLA"),))
+subset_wla <- df_srl_imp_mean |> select(c(starts_with("WLA"),))
 View(subset_wla)
 
 # srl subset
-subset_srl <- df_srl_na_col_rec |> select(c(starts_with("srl"),))
+subset_srl <- df_srl_imp_mean |> select(c(starts_with("SRL"),))
 View(subset_srl)
 
 # srl_f subset
-subset_srl_f <- df_srl_na_col_rec |> select(c(starts_with("srl_f"),))
+subset_srl_f <- df_srl_imp_mean |> select(c(starts_with("SRL_F"),))
 View(subset_srl_f)
 
 # srl_p subset
-subset_srl_p <- df_srl_na_col_rec |> select(c(starts_with("srl_p"),))
+subset_srl_p <- df_srl_imp_mean |> select(c(starts_with("SRL_P"),))
 View(subset_srl_p)
 
 # srl_sr subset
-subset_srl_sr <- df_srl_na_col_rec |> select(c(starts_with("srl_sr"),))
+subset_srl_sr <- df_srl_imp_mean |> select(c(starts_with("SRL_SR"),))
 View(subset_srl_sr)
 
 # wlc subset
-subset_wlc <- df_srl_na_col_rec |> select(c(starts_with("wlc"),))
+subset_wlc <- df_srl_imp_mean |> select(c(starts_with("WLC"),))
 View(subset_wlc)
 
 # se subset
-subset_se <- df_srl_na_col_rec |> select(c(starts_with("se"),))
+subset_se <- df_srl_imp_mean |> select(c(starts_with("SE"),))
 View(subset_se)
 
 
