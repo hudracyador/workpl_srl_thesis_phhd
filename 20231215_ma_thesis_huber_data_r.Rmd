@@ -2,14 +2,14 @@
 title: 'MA "SRL im Bankenbereich": Stand der Auswertung'
 author: "Toni Huber"
 date: "`r Sys.Date()`"
-bibliography: references.bib
-csl: apa.csl
-output: 
+output:
+  word_document:
+    toc: yes
   html_document:
-    toc: true
-    toc_float: true
-  bookdown::pdf_book:
-    citation_package: biblatex
+    toc: yes
+    toc_float: yes
+csl: apa.csl
+bibliography: references.bib
 ---
 
 ```{r setup, include=FALSE}
