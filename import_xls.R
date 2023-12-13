@@ -6,7 +6,7 @@ df_srl <- read_excel("02_20231207_srlwq_deu.xlsx",
 View(df_srl)
 
 # Save a duplicate of the original data set for later
-df_srl_duplicate <- df_srl
+df_srl_dupl <- df_srl
 
 # See, if all 76 columns are present in the imported data set
 ncol(df_srl)
@@ -17,8 +17,8 @@ ncol(df_srl)
 nrow(df_srl)
 
 # Identify all missings in the data frame
-missingCases <- which(is.na(df_srl)==TRUE)
-sumMissingCases <- sum(is.na(df_srl))
+# missingCases <- which(is.na(df_srl)==TRUE)
+# sumMissingCases <- sum(is.na(df_srl))
 
 # Create data frame with only missings
 df_srl_just_na <- df_srl[rowSums(is.na(df_srl)) > 0,]
