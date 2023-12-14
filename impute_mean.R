@@ -1,3 +1,6 @@
+library(missMethods)
+library(dplyr)
+
 # Function for detecting missings in all subscales
 help_percentmissing <- function(x) {
   sum(is.na(x)) / length(x) * 100
@@ -27,8 +30,11 @@ View(df_srl_na_col_rec_no_na)
 # View(df_srl_destr_missings_just_na)
 
 # Impute missings in all scales after cols 1:8 with mean method
-library(missMethods)
-library(dplyr)
 df_srl_imp_mean <- impute_mean(df_srl_na_col_rec_no_na[,9:76])
+df_srl_imp_mean <- round(
+  df_srl_na_col_rec_no_na[,9:76]
+  )
+View(df_srl_imp_mean)
+which(is.na(df_srl_imp_mean)==TRUE)
 df_srl_imp_mean <- bind_cols(df_srl_na_col_rec_no_na[,1:8], df_srl_imp_mean)
 View(df_srl_imp_mean)

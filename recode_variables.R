@@ -135,17 +135,17 @@ df_srl_na_col_rec <- df_srl_na_col |>
     )
   )
 
-sapply(df_srl_na_col$PD_07_ho_amount, class)
+sapply(df_srl_na_col_rec$PD_07_ho_amount, class)
 View(df_srl_na_col_rec)
 
-df_srl_na_col_rec$PD_07_ho_amount <- label_percent(
-  accuracy = NULL,
-  scale = 100,
-  prefix = "",
-  suffix = "%",
-  big.mark = " ",
-  decimal.mark = ".",
-  trim = TRUE,
-)
+# df_srl_na_col_rec$PD_07_ho_amount <- label_percent(
+#   accuracy = NULL,
+#   scale = 100,
+#   prefix = "",
+#   suffix = "%",
+#   big.mark = " ",
+#   decimal.mark = ".",
+#   trim = TRUE,
+# )
 
 
