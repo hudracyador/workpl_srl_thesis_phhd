@@ -1,8 +1,10 @@
-# The function library() will show every package and its version installed in our computer
+# The function library() will show every package and its version installed in 
+# our computer
 # However it is too much information
-# We can create a vector with the name of the packages to check later if a package is in it
+# We can create a vector with the name of the packages to check later if a 
+# package is in it
 
-my_packages <- library()$results[,1]
+my_packages <- library()$results[, 1]
 head(my_packages, 10)
 
 # We can list the libraries that are actually loaded doing
