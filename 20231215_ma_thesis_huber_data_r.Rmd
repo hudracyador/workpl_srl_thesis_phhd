@@ -1,53 +1,495 @@
 ---
-title: 'MA "SRL im Bankenbereich": Stand der Auswertung'
-author: "Toni Huber"
+title: "Master-Thesis \"SRL im Bankenbereich\":<br> Stand der Auswertung"
+author: "Huber, Anton"
 date: "`r Sys.Date()`"
 output:
+  html_document:
+    theme: darkly
+    highlight: tango
+    number_sections: yes
+    toc: yes
+    toc_float:
+      collapsed: yes
   word_document:
     toc: yes
-  html_document:
+  pdf_document:
     toc: yes
-    toc_float: yes
-csl: apa.csl
 bibliography: references.bib
+nocite: '@*'
+biblio-style: apalike
+link-citations: yes
+github-repo: workpl_srl_thesis_phhd
+cover-image: images/cover.png
 ---
+
+![Wissensarbeiter bei der Arbeit. *Quelle: DALL-E 3*](images/knowledge-workers.jpg)
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Datenbereinigung
-## R Markdown
+# Voraussetzungen
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Alle verwendeten Dateien und Code sind in einem gesonderten [GitHub Repository](https://github.com/hudracyador/workpl_srl_thesis_phhd) verfügbar.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+## Verwendete Software-Versionen {.unnumbered}
 
-```{r cars}
-summary(cars)
+Die bei Erstellung dieses Dokuments und in Datenaufbereitung sowie -analyse zugrundeliegenden Session-Informationen bezüglich R und verwendeten Packages sind wie folgt.
+
+```{r tidy=FALSE, echo=FALSE}
+xfun::session_info(c(
+  "knitr", "rmarkdown", "xfun", "readxl", "dplyr", "scales", "missMethods",
+  "psych", "ggplot2", "tidyverse", "tibble", "tidyr"
+), dependencies = FALSE)
 ```
 
-## Including Plots
+RStudio
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+``` yaml
+RStudio 2023.09.1+494 "Desert Sunflower" Release 
+(cd7011dce393115d3a7c3db799dda4b1c7e88711, 2023-10-16) for windows
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) 
+RStudio/2023.09.1+494 Chrome/116.0.5845.190 Electron/26.2.4 Safari/537.36
 ```
 
-### Subsection 1
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+## Benötigte R-Libraries {.unnumbered}
 
-# Datenauswertung
-## Persönliche Daten
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Maecenas porttitor congue massa. Fusce posuere, magna sed pulvinar ultricies, purus lectus malesuada libero, sit amet commodo magna eros quis urna.
-Nunc viverra imperdiet enim. Fusce est. Vivamus a tellus.
-Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Proin pharetra nonummy pede. Mauris et orci.
-Aenean nec lorem. In porttitor. Donec laoreet nonummy augue.
-Suspendisse dui purus, scelerisque at, vulputate vitae, pretium mattis, nunc. Mauris eget neque at sem venenatis eleifend. Ut nonummy.
-Fusce aliquet pede non pede. Suspendisse dapibus lorem pellentesque magna. Integer nulla.
+Die folgenden Bibliotheken bzw. Packages kommen im Rahmen der Datenaufbereitung und -analyse zum Einsatz.
+
+``` yaml
+library(readxl)
+library(dplyr)
+library(scales)
+library(missMethods)
+library(psych)
+library(ggplot2)
+library(tidyverse)
+library(tibble)
+library(tidyr)
+```
+
+# Datenimport
+
+```{r}
+# Import the fully prepared xlsx file into RStudio
+library(readxl)
+df_srl <- read_excel("02_20231207_srlwq_deu.xlsx", 
+                     sheet = "Tabelle1", range = "A1:BX133", 
+                     na = "NA")
+View(df_srl)
+
+# Save a duplicate of the original data set for later
+df_srl_dupl <- df_srl
+
+# See, if all 76 columns are present in the imported data set
+ncol(df_srl)
+
+# See, if all 132 rows are present in the imported data set
+# Original file has 133 rows, the import makes the first row header
+# so does not count
+nrow(df_srl)
+
+# Identify all missings in the data frame
+missingCases <- which(is.na(df_srl)==TRUE)
+sumMissingCases <- sum(is.na(df_srl))
+sumMissingCases
+
+# Create data frame with only missings
+df_srl_just_na <- df_srl[rowSums(is.na(df_srl)) > 0,]
+
+# Create data frame without missings
+# df_srl_na <- na.omit(df_srl)
+df_srl_na <- df_srl
+View(df_srl_na)
+
+# Determine sample size
+sample_size <- nrow(df_srl_na)
+sample_size
+```
+
+# Datenaufbereitung
+
+## Umbenennung der Variablennamen
+
+```{r echo=FALSE}
+# rename col descriptions to shorter and usable variable names
+library(dplyr)
+df_srl_na_col <- rename(
+  df_srl_na,
+  PD_00_ID = "ID",
+  PD_01_age = "In welcher Altersgruppe befindest du dich?",
+  PD_02_gender = "Welchem Geschlecht fühlst du dich zugehörig?",
+  PD_03_employer = "In welchem Teil der DSVGruppe arbeitest du derzeit?",
+  PD_04_work_yrs = "Wie viele Jahre bist du bereits bei deinem jetzigen Arbeitgeber innerhalb der DSVGruppe tätig?",
+  PD_05_work_hrs = "Welche Erwerbssituation trifft auf dich zu?",
+  PD_06_leader = "Bist du in einer fachlichen oder disziplinarischen Führungsposition?",
+  PD_07_ho_amount = "Wie viel Prozent des Monats arbeitest du normalerweise von zu Hause aus?",
+  WLA_08_info_acquire = "Neue Informationen beschaffen (z. B. durch Suche im Internet oder in der Wissensdatenbank des Unternehmens)",
+  WLA_09_collab_solution = "Allein oder mit anderen zusammenarbeiten, um Lösungen für Probleme zu entwickeln",
+  WLA_10_collab_ideas = "Allein oder mit anderen zusammen neue Ideen entwickeln",
+  WLA_11_dev_field = "Neue Entwicklungen in deinem Fachgebiet verfolgen",
+  WLA_12_new_tasks = "Neue Aufgaben ausführen",
+  WLA_13_advice = "Kollegen um Rat fragen",
+  WLA_14_self_study = "An einen Schulungskurs teilnehmen oder Materialien zum Selbststudium verwenden",
+  WLA_15_copy_strategies = "Strategien von Kollegen beobachten oder kopieren, um eine Aufgabe zu erledigen oder ein Problem zu lösen",
+  WLA_16_trial_error = "Durch Versuch und Irrtum einen besseren Weg finden, eine Aufgabe auszuführen",
+  WLA_17_reflection = "Über früheres Handeln reflektieren",
+  WLA_18_feedback = "Feedback von Kollegen zu deinen Aufgaben bekommen",
+  SRL_F_19_personal_standards = "Ich setze persönliche Maßstäbe für die Leistung in meinem Job",
+  SRL_F_20_long_term_goals = "Ich setze mir langfristige Ziele (monatlich oder jährlich), um meine Lernaktivitäten zu steuern",
+  SRL_F_21_goals_time_learn = "Ich setze mir Ziele, die mir helfen, die Zeit, die ich mit Lernen verbringe, zu verwalten",
+  SRL_F_22_deadlines = "Ich setze mir realistische Fristen für das Lernen, wenn ich einen Lernbedarf festgestellt habe.",
+  SRL_F_23_question_self = "Ich stelle mir Fragen zu jeder Lernaufgabe, bevor ich beginne",
+  SRL_F_24_dif_ways_solve = "Ich überlege mir mehrere Möglichkeiten zur Lösung eines Problems und wähle die beste aus",
+  SRL_F_25_past_strategies = "Bei der Planung meines Lernens wende ich Strategien an, die sich in der Vergangenheit bewährt haben",
+  SRL_F_26_spec_strategies = "Ich verwende spezifische Strategien für verschiedene Arten von Dingen, die ich lernen muss",
+  SRL_F_27_apply_learned = "Ich denke, dass ich das, was ich in diesem Beruf lerne, in der Zukunft anwenden kann",
+  SRL_F_28_learn_new = "Es ist wichtig für mich, in diesem Job neue Dinge zu lernen",
+  SRL_F_29_learning_important = "Die Lernaktivitäten, die ich in diesem Job betreibe, sind wichtig für mich",
+  SRL_F_30_difficulties_calm = "Ich kann bei Schwierigkeiten in meinem Job ruhig bleiben, weil ich mich auf meine Fähigkeiten verlassen kann.",
+  SRL_F_31_problem_solutions = "Wenn ich in meinem Job mit einem Problem konfrontiert bin, kann ich normalerweise mehrere Lösungen dafür finden.",
+  SRL_F_32_handle_whatever = "Was auch immer in meinem Job auf mich zukommt, ich kann es normalerweise bewältigen.",
+  SRL_F_33_job_exp_future = "Meine bisherigen Erfahrungen in meinem Job haben mich gut auf meine berufliche Zukunft vorbereitet.",
+  SRL_F_34_self_goals_set = "Ich erreiche die Ziele, die ich mir in meinem Job gesetzt habe.",
+  SRL_F_35_job_demands = "Ich fühle mich auf die meisten Anforderungen in meinem Job vorbereitet.",
+  SRL_P_36_plan_learning_goals = "Ich schreibe einen Plan, um zu beschreiben, wie ich meine Lernziele zu erreichen hoffe",
+  SRL_P_37_rel_learn_now_past = "Ich hinterfrage, wie das, was ich gerade lerne, mit dem zusammenhängt, was ich bereits weiß.",
+  SRL_P_38_change_strategies = "Ich ändere meine Strategien, wenn ich beim Lernen keine Fortschritte mache",
+  SRL_P_39_make_notes = "Beim Lernen mache ich mir Notizen (einschließlich Diagramme usw), die mir helfen, meine Gedanken zu ordnen",
+  SRL_P_40_meaning_signif_info = "Ich konzentriere mich auf den Sinn und die Bedeutung neuer Informationen",
+  SRL_P_41_organize_time = "Ich organisiere meine Zeit so, dass ich meine Ziele bestmöglich erreiche",
+  SRL_P_42_rel_knowl_now_past = "Wenn ich lerne, versuche ich, neues Wissen mit dem zu verknüpfen, was ich bereits weiß",
+  SRL_P_43_collect_info = "Beim Lernen trage ich Informationen aus verschiedenen Quellen zusammen (zB: Personen und Ressourcen)",
+  SRL_P_44_ideas_prev_exp = "Ich versuche, Ideen aus meiner früheren Erfahrung auf meine Arbeit anzuwenden, wo es angebracht ist",
+  SRL_P_45_resources_start_pt = "Beim Lernen betrachte ich die Ressourcen, die ich finde, als Ausgangspunkt und versuche, daraus meine eigenen Ideen zu entwickeln",
+  SRL_P_46_play_ideas = "Ich versuche, mit eigenen Ideen in Bezug auf das, was ich lerne, zu spielen",
+  SRL_P_47_alt_ways_tasks = "Bei meiner Arbeit denke ich über alternative Wege nach, meine Aufgaben auszuführen",
+  SRL_P_48_ask_help_colleagues = "Wenn ich eine Aufgabe nicht verstehe, bitte ich meine Kollegen um Hilfe.",
+  SRL_P_49_identify_colleagues = "Ich versuche, an meinem Arbeitsplatz Kollegen zu identifizieren, die ich um Hilfe bitten kann, wenn ich sie brauche",
+  SRL_P_50_lookup_unsure = "Wenn ich mir über etwas unsicher bin, schlage ich es nach",
+  SRL_P_51_knowl_gaps = "Ich fülle meine Wissenslücken auf, indem ich mir dazu passendes Informationsmaterial besorge",
+  SRL_P_52_challenge_job = "Wenn ich bei meiner Arbeit vor einer Herausforderung stehe, versuche ich, das Problem so eingehend wie möglich zu verstehen",
+  SRL_P_53_opportunities_learn = "Ich mag Gelegenheiten, mich mit Aufgaben zu beschäftigen, bei denen ich lernen muss",
+  SRL_P_54_taks_curiosity = "Ich bevorzuge Aufgaben, die meine Neugierde wecken, auch wenn ich Neues lernen muss, um diese zu erfüllen",
+  SRL_SR_55_task_done_well_learned = "Ich weiß, wie gut ich gelernt habe, wenn ich eine Aufgabe erledigt habe",
+  SRL_SR_56_dif_ways_task_done = "Ich frage mich, ob es andere Wege gegeben hätte, eine bereits erledigte Aufgabe zu vollenden.",
+  SRL_SR_57_things_learned_finish = "Ich denke nach dem Lernen darüber nach, was ich gelernt habe.",
+  SRL_SR_58_big_picture = 'Ich denke darüber nach, wie das, was ich gelernt habe, in das "Gesamtbild" meines Unternehmens passt',
+  SRL_SR_59_things_learned_team = "Ich überlege, wie sich das, was ich gelernt habe, auf mein Team bezieht",
+  SRL_SR_60_new_info_impact = "Ich versuche zu verstehen, wie sich neue Informationen, die ich gelernt habe, auf meine Arbeit auswirken",
+  WLC_61_job_creative = "Mein Job verlangt von mir, kreativ zu sein",
+  WLC_62 = "Ich kann mir meine Arbeitsaufgaben aussuchen",
+  WLC_63_spec_abilities = "Ich habe die Möglichkeit, meine eigenen besonderen Fähigkeiten zu entwickeln",
+  WLC_64_vary_ways_work = "Ich kann variieren, auf welche Art und Weise ich meine Arbeit erledige",
+  WLC_65_high_degr_competency = "Mein Job erfordert ein hohes Maß an Kompetenz",
+  WLC_66_learn_new_things = "Meine Job erfordert, dass ich neue Dinge lerne",
+  SE_67_goals_assigned = "Wenn ich von zuhause aus arbeite, erreiche ich die Ziele, die mir gesetzt werden",
+  SE_68_schedules_deadlines = "Wenn ich von zuhause aus arbeite, halte ich Zeitpläne und Arbeitsfristen ein",
+  SE_69_new_work_methods = "Wenn ich von zuhause aus arbeite, erlerne ich neue Arbeitsmethoden",
+  SE_70_work_all_energy = "Wenn ich von zuhause aus arbeite, setze ich meine ganze Energie für die Arbeit ein",
+  SE_71_finish_all_work = "Wenn ich von zuhause aus arbeite, erledige ich alle zugewiesenen Aufgaben",
+  SE_72_collab_home = "Wenn ich von zuhause aus arbeite, arbeite ich mit anderen Kollegen zusammen",
+  SE_73_good_rel = "Wenn ich von zuhause aus arbeite, habe ich gute Beziehungen zu meinen direkten Vorgesetzten",
+  SE_74_diverse_people = "Wenn ich von zuhause aus arbeite, arbeite ich mit Menschen unterschiedlicher Erfahrung und unterschiedlichen Alters zusammen",
+  SE_75_work_team_easy = "Wenn ich von zuhause aus arbeite, kann ich problemlos in einem Team arbeiten",
+)
+
+# Check col names in console
+names(df_srl_na_col)
+
+# Check col names in data frame View
+View(df_srl_na_col)
+```
+
+## Rekodierung der Variablenwerte von <chr> zu <num>
+
+```{r}
+library(dplyr)
+library(scales)
+
+# Convert work years from <chr> to <num>
+df_srl_na_col$PD_04_work_yrs <- as.numeric(
+  as.character(
+    df_srl_na_col$PD_04_work_yrs
+  )
+)
+
+View(df_srl_na_col)
+
+sapply(df_srl_na_col$PD_04_work_yrs, class)
+sapply(df_srl_na_col$PD_07_ho_amount, class)
 
 
-# References
+# Recode variables
+df_srl_na_col_rec <- df_srl_na_col |>
+  mutate(
+    across(
+      contains("ho_amount"),
+      ~ case_when(
+        . == "0 %" ~ 0,
+        . == "10 %" ~ 0.1,
+        . == "20 %" ~ 0.2,
+        . == "30 %" ~ 0.3,
+        . == "40 %" ~ 0.4,
+        . == "50 %" ~ 0.5,
+        . == "60 %" ~ 0.6,
+        . == "70 %" ~ 0.7,
+        . == "80 %" ~ 0.8,
+        . == "90 %" ~ 0.9,
+        . == "100 %" ~ 1,
+      )
+    ),
+    across(
+      contains("age"),
+      ~ case_when(
+        . == "19 oder jünger" ~ 1,
+        . == "20-29" ~ 2,
+        . == "30-39" ~ 3,
+        . == "40-49" ~ 4,
+        . == "50-59" ~ 5,
+        . == "60 oder älter" ~ 6,
+      )
+    ),
+    across(
+      contains("gender"),
+      ~ case_when(
+        . == "weiblich" ~ 1,
+        . == "männlich" ~ 2,
+        . == "divers" ~ 3,
+        . == "keine Angabe" ~ 4,
+      )
+    ),
+    across(
+      contains("employer"),
+      ~ case_when(
+        . == "Deutscher Sparkassenverlag GmbH" ~ 1,
+        . == "S-Payment GmbH" ~ 2,
+        . == "PAYONE GmbH" ~ 3,
+        . == "S-Management Services GmbH" ~ 4,
+        . == "Sparkassen-Einkaufsgesellschaft mbH" ~ 5,
+        . == "MEG Mitarbeiter-Einkaufsgesellschaft mbH" ~ 6,
+        . == "S-Communication Services GmbH" ~ 7,
+        . == "S-Markt & Mehrwert GmbH & Co. KG" ~ 8,
+        . == "DSV Immobilien Service GmbH & Co. KG" ~ 9,
+        . == "DSV IT Service GmbH" ~ 10,
+        . == "Sonstiges" ~ 11,
+      )
+    ),
+    across(
+      contains("work_hrs"),
+      ~ case_when(
+        . == "Vollzeit" ~ 1,
+        . == "Teilzeit" ~ 2,
+        . == "Altersteilzeit (unabhängig davon, ob in der Arbeits- oder Freistellungsphase befindlich)" ~ 3,
+        . == "In einer beruflichen Ausbildung/Lehre" ~ 4,
+        . == "Werkstudent" ~ 5,
+        . == "Werkstudent (Teilzeit)" ~ 5
+      )
+    ),
+    across(
+      contains("leader"),
+      ~ case_when(
+        . == "ja" ~ 1,
+        . == "nein" ~ 2,
+      )
+    ),
+    across(
+      contains("SRL_"),
+      ~ case_when(
+        . == "trifft überhaupt nicht auf mich zu" ~ 1,
+        . == "trifft manchmal auf mich zu" ~ 2,
+        . == "trifft eher auf mich zu" ~ 3,
+        . == "trifft auf mich zu" ~ 4,
+        . == "trifft sehr auf mich zu" ~ 5,
+      )
+    ),
+    across(
+      contains("SE_"),
+      ~ case_when(
+        . == "trifft überhaupt nicht auf mich zu" ~ 1,
+        . == "trifft manchmal auf mich zu" ~ 2,
+        . == "trifft eher auf mich zu" ~ 3,
+        . == "trifft auf mich zu" ~ 4,
+        . == "trifft sehr auf mich zu" ~ 5,
+      )
+    ),
+    across(
+      contains("WLC_"),
+      ~ case_when(
+        . == "nie" ~ 1,
+        . == "ein- oder zweimal" ~ 2,
+        . == "manchmal" ~ 3,
+        . == "oft" ~ 4,
+        . == "sehr oft oder ständig" ~ 5
+      )
+    ),
+    across(
+      contains("WLA_"),
+      ~ case_when(
+        . == "nie" ~ 1,
+        . == "ein- oder zweimal" ~ 2,
+        . == "manchmal" ~ 3,
+        . == "oft" ~ 4,
+        . == "sehr oft oder ständig" ~ 5
+      )
+    )
+  )
 
-<div id="refs"></div>
+sapply(df_srl_na_col_rec$PD_07_ho_amount, class)
+View(df_srl_na_col_rec)
+```
+
+## Imputation fehlender Werte (Missings)
+
+```{r}
+library(missMethods)
+library(dplyr)
+
+# Function for detecting missings in all subscales
+help_percentmissing <- function(x) {
+  sum(is.na(x)) / length(x) * 100
+  # Hier wird die Summe aller Missings durch die Anzahl der
+  # Antworten der Testteilnehmenden geteilt
+}
+
+percentmissing <- function(data) {
+  (apply(df_srl, 1, help_percentmissing))
+  # apply() wendet eine Funktion auf multiple Instanzen an, hier,
+  # symbolisiert durch die "1", auf alle Zeilen des Datensatzes
+  # ("2" wäre für alle Spalten)
+}
+
+nrow(df_srl_na_col_rec) # Proband:innen vorher
+
+table(round(percentmissing(df_srl), digits = 2))
+
+df_srl_na_col_rec_no_na <-
+  df_srl_na_col_rec[percentmissing(df_srl_na_col_rec[,1:8]) < 90, ]
+
+nrow(df_srl_na_col_rec_no_na) # Proband:innen nachher
+View(df_srl_na_col_rec_no_na)
+
+# df_srl_destr_missings_just_na <-
+#  df_srl_destr_missings[rowSums(is.na(df_srl_destr_missings)) > 0, ]
+# View(df_srl_destr_missings_just_na)
+
+# Impute missings in all scales after cols 1:8 with mean method
+df_srl_imp_mean <- impute_mean(df_srl_na_col_rec_no_na[,9:76])
+df_srl_imp_mean <- round(
+  df_srl_na_col_rec_no_na[,9:76]
+  )
+View(df_srl_imp_mean)
+which(is.na(df_srl_imp_mean)==TRUE)
+df_srl_imp_mean <- bind_cols(df_srl_na_col_rec_no_na[,1:8], df_srl_imp_mean)
+View(df_srl_imp_mean)
+```
+
+## Erstellung von Subsets für die jeweiligen Subskalen
+
+```{r}
+library(dplyr)
+
+# wla subset
+subset_wla <- df_srl_imp_mean |> select(c(starts_with("WLA"),))
+View(subset_wla)
+
+# srl subset
+subset_srl <- df_srl_imp_mean |> select(c(starts_with("SRL"),))
+View(subset_srl)
+
+# srl_f subset
+subset_srl_f <- df_srl_imp_mean |> select(c(starts_with("SRL_F"),))
+View(subset_srl_f)
+
+# srl_p subset
+subset_srl_p <- df_srl_imp_mean |> select(c(starts_with("SRL_P"),))
+View(subset_srl_p)
+
+# srl_sr subset
+subset_srl_sr <- df_srl_imp_mean |> select(c(starts_with("SRL_SR"),))
+View(subset_srl_sr)
+
+# wlc subset
+subset_wlc <- df_srl_imp_mean |> select(c(starts_with("WLC"),))
+View(subset_wlc)
+
+# se subset
+subset_se <- df_srl_imp_mean |> select(c(starts_with("SE"),))
+View(subset_se)
+```
+
+## Deskriptive Prüfung der einzelnen Subskalen
+
+```{r}
+# Descriptive check of subsets
+summary(subset_se)
+summary(subset_srl_f)
+summary(subset_srl_p)
+summary(subset_srl_sr)
+summary(subset_wla)
+summary(subset_wlc)
+```
+
+# Psychometrische Analyse
+
+## Interne Konsistenz {.tabset .tabset-fade .tabset-pills}
+
+```{r}
+# Installiere und lade das Paket psych, das für die Berechnung verwendet wird
+library(psych)
+```
+
+
+### WLA {.unnumbered}
+
+```{r}
+alpha(subset_wla, check.keys = TRUE)
+```
+
+### SRL-F {.unnumbered}
+
+```{r}
+alpha(subset_srl_f, check.keys = TRUE)
+```
+
+### SRL-P {.unnumbered}
+
+```{r}
+alpha(subset_srl_p, check.keys = TRUE)
+```
+
+### SRL-SR {.unnumbered}
+
+```{r}
+alpha(subset_srl_sr, check.keys = TRUE)
+```
+
+### WLC {.unnumbered}
+
+```{r}
+alpha(subset_wlc, check.keys = TRUE)
+```
+
+### SE {.unnumbered}
+
+```{r}
+alpha(subset_se, check.keys = TRUE)
+```
+
+## Exploratorische Faktorenanalyse
+
+## Konvergenzvalidität
+
+# Mediationsanalyse
+
+## H1a: WLC → WLA
+
+## H1b: WLC → SRL
+
+## H1c: SRL → WLA
+
+## H1d: WLC → SRL → WLA
+
+## H2: SRL → SE
+
+# Quellenangaben {.unnumbered}
