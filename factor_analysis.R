@@ -1,6 +1,6 @@
 install.packages('RcmdrMisc')
-require(psych)
-require(RcmdrMisc)
+library(psych)
+library(RcmdrMisc)
 
 KMO(subset_srl_f)
 
