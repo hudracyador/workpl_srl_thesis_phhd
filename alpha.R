@@ -1,9 +1,8 @@
-# Installiere und lade das Paket psych, das für die Berechnung verwendet wird
 library(psych)
 unloadNamespace("ggplot2")
 
-# Berechne aus dem jeweiligen Subset den Reliabilitätswert 
-# check.key=TRUE überprüft eine eventuelle Inverskodierung
+# Calculate the reliability value from the respective subset
+# check.key=TRUE checks for possible inverse coding
 
 # raw_alpha: 0.81
 alpha(subset_wla, check.keys = TRUE)
