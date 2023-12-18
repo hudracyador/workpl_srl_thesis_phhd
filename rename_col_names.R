@@ -1,4 +1,4 @@
-# rename col descriptions to shorter and usable variable names
+# Rename col descriptions to shorter and usable variable names
 library(dplyr)
 df_srl_col <- rename(
   df_srl,
