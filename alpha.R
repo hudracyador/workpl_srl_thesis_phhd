@@ -2,27 +2,23 @@
 library(psych)
 unloadNamespace("ggplot2")
 
-# Ziehe ein Subset aus dem gesamten Data-Frame, bei dem aus den Variablen zwischen 
-# c([Variablen]) der Reliabilitätswert berechnet wird
+# Berechne aus dem jeweiligen Subset den Reliabilitätswert 
 # check.key=TRUE überprüft eine eventuelle Inverskodierung
+
+# raw_alpha: 0.81
 alpha(subset_wla, check.keys = TRUE)
+
+# raw_alpha: 0.81
 alpha(subset_srl_f, check.keys = TRUE)
+
+# raw_alpha: 0.86
 alpha(subset_srl_p, check.keys = TRUE)
+
+# raw_alpha: 0.83
 alpha(subset_srl_sr, check.keys = TRUE)
+
+# raw_alpha: 0.7
 alpha(subset_wlc, check.keys = TRUE)
+
+# raw_alpha: 0.88
 alpha(subset_se, check.keys = TRUE)
-
-library(likert)
-p <- as.data.frame(df_srl_na_col_rec[,8:19])
-
-
-# library
-library(likert) 
-
-# Use a provided dataset
-data(pisaitems) 
-items28 <- pisaitems[, substr(names(pisaitems), 1, 5) == "ST24Q"] 
-
-# Build plot
-p <- likert(items28) 
-plot(p)
