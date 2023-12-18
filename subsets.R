@@ -1,4 +1,8 @@
 library(dplyr)
+library(psych)
+
+# Create a subset for every individual scale inside the questionnaire
+# to facilitate further analysis of the data
 
 # wla subset
 subset_wla <- df_srl_imp_mean_comb |> select(c(starts_with("WLA"),))
@@ -27,15 +31,6 @@ View(subset_wlc)
 # se subset
 subset_se <- df_srl_imp_mean_comb |> select(c(starts_with("SE"),))
 View(subset_se)
-
-# # alter
-# subset_age <- df_srl |> select(c(starts_with("In welcher Altersgruppe")))
-# subset_age_na <- na.omit(subset_age)
-# subset_age_fctrs <- factor(subset_age_na)
-# sapply(subset_age_fctrs, class)
-# View(subset_age_fctrs)
-# likert(subset_age_fctrs)
-
 
 # Descriptive check of subsets
 describe(subset_se)
