@@ -21,11 +21,12 @@ nrow(df_srl)
 # sumMissingCases <- sum(is.na(df_srl))
 
 # Create data frame with only missings
-# df_srl_just_na <- df_srl[rowSums(is.na(df_srl)) > 0,]
+df_srl_just_na <- df_srl[rowSums(is.na(df_srl)) > 0,]
+View(df_srl_just_na)
 
-# Create data frame without missings for later use in describing sample
-df_srl_na <- na.omit(df_srl)
-View(df_srl_na)
+# # Create data frame without missings for later use in describing sample
+# df_srl_na <- na.omit(df_srl)
+# View(df_srl_na)
 
 # # Determine sample size
 # sample_size <- nrow(df_srl_na)
