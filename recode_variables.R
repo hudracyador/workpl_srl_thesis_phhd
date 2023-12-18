@@ -8,19 +8,15 @@ df_srl_col$PD_04_work_yrs <- as.numeric(
   )
 )
 
-# df_srl_na_col$PD_07_ho_amount <- as.numeric (
-#  as.character(
-#    df_srl_na_col$PD_07_ho_amount
-#  )
-# )
-
+# Check column PD_04_work_yrs visually
 View(df_srl_col)
 
+# Check if class of all values in column PD_04_work_yrs is now <num> 
 sapply(df_srl_col$PD_04_work_yrs, class)
-# sapply(df_srl_col$PD_07_ho_amount, class)
 
 
-# Recode variables
+# Recode variables into numerical values to facilitate data analysis
+# operations and generation of graphs
 df_srl_col_rec <- df_srl_col |>
   mutate(
     across(
@@ -135,17 +131,8 @@ df_srl_col_rec <- df_srl_col |>
     )
   )
 
+# Check if class of all values in column PD_07_ho_amount is now <num> 
 sapply(df_srl_col_rec$PD_07_ho_amount, class)
+
+# Check column PD_04_work_yrs visually
 View(df_srl_col_rec)
-
-# df_srl_na_col_rec$PD_07_ho_amount <- label_percent(
-#   accuracy = NULL,
-#   scale = 100,
-#   prefix = "",
-#   suffix = "%",
-#   big.mark = " ",
-#   decimal.mark = ".",
-#   trim = TRUE,
-# )
-
-
