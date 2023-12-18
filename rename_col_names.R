@@ -1,7 +1,7 @@
 # rename col descriptions to shorter and usable variable names
 library(dplyr)
-df_srl_na_col <- rename(
-  df_srl_na,
+df_srl_col <- rename(
+  df_srl,
   PD_00_ID = "ID",
   PD_01_age = "In welcher Altersgruppe befindest du dich?",
   PD_02_gender = "Welchem Geschlecht fühlst du dich zugehörig?",
@@ -81,7 +81,7 @@ df_srl_na_col <- rename(
 )
 
 # Check col names in console
-names(df_srl_na_col)
+names(df_srl_col)
 
 # Check col names in data frame View
-View(df_srl_na_col)
+View(df_srl_col)
