@@ -1,7 +1,7 @@
 library(missMethods)
 library(dplyr)
 
-# Function for detecting missings in all subscales
+# Function for detecting missings in a data frame
 help_percentmissing <- function(x) {
   sum(is.na(x)) / length(x) * 100
   # Hier wird die Summe aller Missings durch die Anzahl der
@@ -9,32 +9,46 @@ help_percentmissing <- function(x) {
 }
 
 percentmissing <- function(data) {
-  (apply(df_srl, 1, help_percentmissing))
+  (apply(df_srl_col_rec, 1, help_percentmissing))
   # apply() wendet eine Funktion auf multiple Instanzen an, hier,
   # symbolisiert durch die "1", auf alle Zeilen des Datensatzes
   # ("2" wäre für alle Spalten)
 }
 
-nrow(df_srl_na_col_rec) # Proband:innen vorher
+nrow(df_srl_col_rec) # Proband:innen vorher
 
-table(round(percentmissing(df_srl), digits = 2))
+# table(round(percentmissing(df_srl), digits = 2))
 
-df_srl_na_col_rec_no_na <-
-  df_srl_na_col_rec[percentmissing(df_srl_na_col_rec[,1:8]) < 90, ]
+# Erstelle einen data.frame, der alle Datensätze enthält,
+# deren Anteil an Missings insgesamt weniger als 90 Prozent beträgt
+df_srl_col_rec_na <-
+  df_srl_col_rec[percentmissing(df_srl_col_rec[,1:76]) < 90, ]
 
-nrow(df_srl_na_col_rec_no_na) # Proband:innen nachher
-View(df_srl_na_col_rec_no_na)
+nrow(df_srl_col_rec_na) # Proband:innen nachher
+View(df_srl_col_rec_na)
 
 # df_srl_destr_missings_just_na <-
 #  df_srl_destr_missings[rowSums(is.na(df_srl_destr_missings)) > 0, ]
 # View(df_srl_destr_missings_just_na)
 
 # Impute missings in all scales after cols 1:8 with mean method
-df_srl_imp_mean <- impute_mean(df_srl_na_col_rec_no_na[,9:76])
-df_srl_imp_mean <- round(
-  df_srl_na_col_rec_no_na[,9:76]
+df_srl_imp_mean <- impute_mean(df_srl_col_rec_na[,9:76])
+
+# Round all float values to integer
+df_srl_imp_mean |>
+  mutate(
+    across(where(is.numeric), round)
   )
+
+# Truncate all integer values with decimal points to real integers
+df_srl_imp_mean <- trunc(df_srl_imp_mean)
+
 View(df_srl_imp_mean)
+
+# Verify that there are no missings left in data frame
 which(is.na(df_srl_imp_mean)==TRUE)
-df_srl_imp_mean <- bind_cols(df_srl_na_col_rec_no_na[,1:8], df_srl_imp_mean)
-View(df_srl_imp_mean)
+
+# Combine columns 1:8 and 9:76 for there were no missings removed in
+# 1:8
+df_srl_imp_mean_comb <- bind_cols(df_srl_col_rec_na[,1:8], df_srl_imp_mean)
+View(df_srl_imp_mean_comb)
