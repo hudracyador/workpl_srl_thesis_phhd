@@ -2,9 +2,9 @@ library(dplyr)
 library(scales)
 
 # Convert work years from <chr> to <num>
-df_srl_na_col$PD_04_work_yrs <- as.numeric(
+df_srl_col$PD_04_work_yrs <- as.numeric(
   as.character(
-    df_srl_na_col$PD_04_work_yrs
+    df_srl_col$PD_04_work_yrs
   )
 )
 
@@ -14,14 +14,14 @@ df_srl_na_col$PD_04_work_yrs <- as.numeric(
 #  )
 # )
 
-View(df_srl_na_col)
+View(df_srl_col)
 
-sapply(df_srl_na_col$PD_04_work_yrs, class)
-sapply(df_srl_na_col$PD_07_ho_amount, class)
+sapply(df_srl_col$PD_04_work_yrs, class)
+# sapply(df_srl_col$PD_07_ho_amount, class)
 
 
 # Recode variables
-df_srl_na_col_rec <- df_srl_na_col |>
+df_srl_col_rec <- df_srl_col |>
   mutate(
     across(
       contains("ho_amount"),
@@ -135,8 +135,8 @@ df_srl_na_col_rec <- df_srl_na_col |>
     )
   )
 
-sapply(df_srl_na_col_rec$PD_07_ho_amount, class)
-View(df_srl_na_col_rec)
+sapply(df_srl_col_rec$PD_07_ho_amount, class)
+View(df_srl_col_rec)
 
 # df_srl_na_col_rec$PD_07_ho_amount <- label_percent(
 #   accuracy = NULL,
