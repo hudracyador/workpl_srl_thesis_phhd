@@ -27,3 +27,7 @@ library(tidyr)
 
 # Library for throwing errors, when there are conflicting functions
 library(conflicted)
+
+# Find out versions of installed packages
+packageVersion("likert")
+sessionInfo()
