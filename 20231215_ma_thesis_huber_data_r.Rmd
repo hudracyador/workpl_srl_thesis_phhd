@@ -6,6 +6,7 @@ output:
   html_document:
     theme: darkly
     highlight: tango
+    df_print: paged
     number_sections: yes
     toc: yes
     toc_float:
@@ -28,7 +29,7 @@ cover-image: images/cover.png
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Voraussetzungen
+# Voraussetzungen {.unnumbered}
 
 Alle verwendeten Dateien und Code sind in einem gesonderten [GitHub Repository](https://github.com/hudracyador/workpl_srl_thesis_phhd) verfügbar.
 
@@ -68,6 +69,15 @@ library(tibble)
 library(tidyr)
 ```
 
+# Datenerhebung
+
+Die Zielpopulation dieser Studie sind Wissensarbeiter. Teilnehmende für die Umfrage wurden durch Zufallsstichproben gewonnen. Die Stichprobe für die Datensammlung bestand aus Wissensarbeitern, die in einer Dienstleistungs-Unternehmensgruppe im Bankenbereich tätig sind (n = 3.290). In Abstimmung mit der zuständigen Abteilung für Informationssicherheit & Datenschutz wurde der Fragebogen anonymisiert und im intern abgestimmten und geprüften Tool MS Forms erstellt. Über einen Unternehmensgruppe-weiten Intranet-Post wurde der [Link zum Fragebogen](https://forms.office.com/e/QmQ1MncGbK) an alle potenziellen Teilnehmenden bereitgestellt.
+
+<details>
+<summary>Intranet-Beitrag zur Ausbringung des Fragebogens</summary>
+![Intranet-Beitrag zur Ausbringung des Fragebogens](images/07_Beitrag_Intranet_Studie.jpg)
+</details>
+
 # Datenimport
 
 ```{r}
@@ -76,7 +86,6 @@ library(readxl)
 df_srl <- read_excel("02_20231207_srlwq_deu.xlsx", 
                      sheet = "Tabelle1", range = "A1:BX133", 
                      na = "NA")
-View(df_srl)
 
 # Save a duplicate of the original data set for later
 df_srl_dupl <- df_srl
@@ -89,22 +98,8 @@ ncol(df_srl)
 # so does not count
 nrow(df_srl)
 
-# Identify all missings in the data frame
-missingCases <- which(is.na(df_srl)==TRUE)
-sumMissingCases <- sum(is.na(df_srl))
-sumMissingCases
-
 # Create data frame with only missings
 df_srl_just_na <- df_srl[rowSums(is.na(df_srl)) > 0,]
-
-# Create data frame without missings
-# df_srl_na <- na.omit(df_srl)
-df_srl_na <- df_srl
-View(df_srl_na)
-
-# Determine sample size
-sample_size <- nrow(df_srl_na)
-sample_size
 ```
 
 # Datenaufbereitung
@@ -112,10 +107,11 @@ sample_size
 ## Umbenennung der Variablennamen
 
 ```{r echo=FALSE}
-# rename col descriptions to shorter and usable variable names
 library(dplyr)
-df_srl_na_col <- rename(
-  df_srl_na,
+
+# Rename col descriptions to shorter and usable variable names
+df_srl_col <- rename(
+  df_srl,
   PD_00_ID = "ID",
   PD_01_age = "In welcher Altersgruppe befindest du dich?",
   PD_02_gender = "Welchem Geschlecht fühlst du dich zugehörig?",
@@ -193,35 +189,23 @@ df_srl_na_col <- rename(
   SE_74_diverse_people = "Wenn ich von zuhause aus arbeite, arbeite ich mit Menschen unterschiedlicher Erfahrung und unterschiedlichen Alters zusammen",
   SE_75_work_team_easy = "Wenn ich von zuhause aus arbeite, kann ich problemlos in einem Team arbeiten",
 )
-
-# Check col names in console
-names(df_srl_na_col)
-
-# Check col names in data frame View
-View(df_srl_na_col)
 ```
 
-## Rekodierung der Variablenwerte von <chr> zu <num>
+## Rekodierung der Variablenwerte von chr zu num
 
 ```{r}
-library(dplyr)
 library(scales)
 
 # Convert work years from <chr> to <num>
-df_srl_na_col$PD_04_work_yrs <- as.numeric(
+df_srl_col$PD_04_work_yrs <- as.numeric(
   as.character(
-    df_srl_na_col$PD_04_work_yrs
+    df_srl_col$PD_04_work_yrs
   )
 )
 
-View(df_srl_na_col)
-
-sapply(df_srl_na_col$PD_04_work_yrs, class)
-sapply(df_srl_na_col$PD_07_ho_amount, class)
-
-
-# Recode variables
-df_srl_na_col_rec <- df_srl_na_col |>
+# Recode variables into numerical values to facilitate data analysis
+# operations and generation of graphs
+df_srl_col_rec <- df_srl_col |>
   mutate(
     across(
       contains("ho_amount"),
@@ -334,145 +318,391 @@ df_srl_na_col_rec <- df_srl_na_col |>
       )
     )
   )
-
-sapply(df_srl_na_col_rec$PD_07_ho_amount, class)
-View(df_srl_na_col_rec)
 ```
 
 ## Imputation fehlender Werte (Missings)
+
+
 
 ```{r}
 library(missMethods)
 library(dplyr)
 
-# Function for detecting missings in all subscales
+# Create function for detecting missings in a data frame
 help_percentmissing <- function(x) {
   sum(is.na(x)) / length(x) * 100
-  # Hier wird die Summe aller Missings durch die Anzahl der
-  # Antworten der Testteilnehmenden geteilt
+  # Here, the sum of all missings is divided by the number of answers given
+  # by the test participants
 }
 
 percentmissing <- function(data) {
-  (apply(df_srl, 1, help_percentmissing))
-  # apply() wendet eine Funktion auf multiple Instanzen an, hier,
-  # symbolisiert durch die "1", auf alle Zeilen des Datensatzes
-  # ("2" wäre für alle Spalten)
+  (apply(df_srl_col_rec, 1, help_percentmissing))
+  # apply() applies a function to multiple instances, here,
+  # symbolized by the "1", to all rows of the data set
+  # ("2" would be for all columns)
 }
 
-nrow(df_srl_na_col_rec) # Proband:innen vorher
+nrow(df_srl_col_rec) # Test subjects before
 
-table(round(percentmissing(df_srl), digits = 2))
+# Create a data.frame that contains all data records with a total 
+# missing percentage of less than 90 percent
+df_srl_col_rec_na <-
+  df_srl_col_rec[percentmissing(df_srl_col_rec[,1:76]) < 90, ]
 
-df_srl_na_col_rec_no_na <-
-  df_srl_na_col_rec[percentmissing(df_srl_na_col_rec[,1:8]) < 90, ]
+nrow(df_srl_col_rec_na) # Test subjects after
 
-nrow(df_srl_na_col_rec_no_na) # Proband:innen nachher
-View(df_srl_na_col_rec_no_na)
+# Impute missings in columns 9:76 with mean method
+# The hereby generated data frame contains all scales
+# apart from personal details
+df_srl_imp_mean <- impute_mean(df_srl_col_rec_na[,9:76])
 
-# df_srl_destr_missings_just_na <-
-#  df_srl_destr_missings[rowSums(is.na(df_srl_destr_missings)) > 0, ]
-# View(df_srl_destr_missings_just_na)
-
-# Impute missings in all scales after cols 1:8 with mean method
-df_srl_imp_mean <- impute_mean(df_srl_na_col_rec_no_na[,9:76])
-df_srl_imp_mean <- round(
-  df_srl_na_col_rec_no_na[,9:76]
+# Round all <num> values from float to integer values
+df_srl_imp_mean |>
+  mutate(
+    across(where(is.numeric), round)
   )
-View(df_srl_imp_mean)
+
+# Truncate all integer values with decimal points to real integers
+df_srl_imp_mean <- trunc(df_srl_imp_mean)
+
+# Verify that there are no missings left in data frame containing all scales
+# apart from personal details
 which(is.na(df_srl_imp_mean)==TRUE)
-df_srl_imp_mean <- bind_cols(df_srl_na_col_rec_no_na[,1:8], df_srl_imp_mean)
-View(df_srl_imp_mean)
+# Valid if result is "integer(0)"
+
+# Combine columns 1:8 and 9:76 for there were no missings removed in cols 1:8
+df_srl_imp_mean_comb <- bind_cols(df_srl_col_rec_na[,1:8], df_srl_imp_mean)
 ```
 
 ## Erstellung von Subsets für die jeweiligen Subskalen
 
 ```{r}
-library(dplyr)
+# Create a subset for every individual scale inside the questionnaire
+# to facilitate further analysis of the data
 
 # wla subset
-subset_wla <- df_srl_imp_mean |> select(c(starts_with("WLA"),))
-View(subset_wla)
+subset_wla <- df_srl_imp_mean_comb |> select(c(starts_with("WLA"),))
 
-# srl subset
-subset_srl <- df_srl_imp_mean |> select(c(starts_with("SRL"),))
-View(subset_srl)
+# srl subset (all srl scales)
+subset_srl <- df_srl_imp_mean_comb |> select(c(starts_with("SRL"),))
 
 # srl_f subset
-subset_srl_f <- df_srl_imp_mean |> select(c(starts_with("SRL_F"),))
-View(subset_srl_f)
+subset_srl_f <- df_srl_imp_mean_comb |> select(c(starts_with("SRL_F"),))
 
 # srl_p subset
-subset_srl_p <- df_srl_imp_mean |> select(c(starts_with("SRL_P"),))
-View(subset_srl_p)
+subset_srl_p <- df_srl_imp_mean_comb |> select(c(starts_with("SRL_P"),))
 
 # srl_sr subset
-subset_srl_sr <- df_srl_imp_mean |> select(c(starts_with("SRL_SR"),))
-View(subset_srl_sr)
+subset_srl_sr <- df_srl_imp_mean_comb |> select(c(starts_with("SRL_SR"),))
 
 # wlc subset
-subset_wlc <- df_srl_imp_mean |> select(c(starts_with("WLC"),))
-View(subset_wlc)
+subset_wlc <- df_srl_imp_mean_comb |> select(c(starts_with("WLC"),))
 
 # se subset
-subset_se <- df_srl_imp_mean |> select(c(starts_with("SE"),))
-View(subset_se)
+subset_se <- df_srl_imp_mean_comb |> select(c(starts_with("SE"),))
 ```
 
-## Deskriptive Prüfung der einzelnen Subskalen
+## Zusammenführung von Einzelitems in Faktoren
+
+Im für die Erstellung und psychometrische Analyse des Fragebogens zugrundeliegenden Papers @Fontana.2015 haben die Autoren mittels explorativer Faktorenanalyse die Items aus den jeweiligen Subskalen einige wenige Faktoren reduziert. Der folgende Code fasst die Faktoren aus den zuvor erstellten Subsets des Gesamt-Fragebogens zusammen (Schritt 1) und fasst danach alle Zeilen-Mittelwerte in einer Spalte zusammen, sodass die einzelnen Faktoren im Rahmen von Regregessions-/Mediationsanalysen untersucht werden können.
 
 ```{r}
-# Descriptive check of subsets
-summary(subset_se)
-summary(subset_srl_f)
-summary(subset_srl_p)
-summary(subset_srl_sr)
-summary(subset_wla)
-summary(subset_wlc)
+library(dplyr)
+
+# SUBSECTION WLA FACTOR
+# Calculate rowMeans for WLA F1: "Workplace Learning Activity" to
+# facilitate further analysis
+wla_f1 <- as.data.frame(rowMeans(subset_wla))
+colnames(wla_f1)[1] <- "wla_f1"
+
+
+# SUBSECTION SRL-F FACTORS
+
+# SRL-F F1
+# Create data frame for factor F1: "Strategic planning"
+srl_f_f1 <- subset_srl_f |>
+  select(
+    c(
+      "SRL_F_26_spec_strategies",
+      "SRL_F_23_question_self",
+      "SRL_F_25_past_strategies",
+      "SRL_F_21_goals_time_learn",
+      "SRL_F_22_deadlines",
+      "SRL_F_20_long_term_goals",
+      "SRL_F_24_dif_ways_solve"
+    ),
+  )
+
+# Calculate rowMeans for F1: "Strategic planning" to
+# facilitate further analysis
+srl_f_f1 <- as.data.frame(rowMeans(srl_f_f1))
+colnames(srl_f_f1)[1] <- "srl_f_f1"
+
+
+# SRL-F F2
+# Create data frame for factor SRL-F F2: "Self-efficacy"
+srl_f_f2 <- subset_srl_f |>
+  select(
+    c(
+      "SRL_F_30_difficulties_calm",
+      "SRL_F_31_problem_solutions",
+      "SRL_F_32_handle_whatever",
+      "SRL_F_33_job_exp_future"
+    ),
+  )
+
+# Calculate rowMeans for SRL-F F2: "Self-efficacy" to
+# facilitate further analysis
+srl_f_f2 <- as.data.frame(rowMeans(srl_f_f2))
+colnames(srl_f_f2)[1] <- "srl_f_f2"
+
+
+# SRL-F F3
+# Create data frame for factor SRL-F F2: "Goal setting"
+srl_f_f3 <- subset_srl_f |>
+  select(
+    c(
+      "SRL_F_34_self_goals_set",
+      "SRL_F_35_job_demands",
+      "SRL_F_19_personal_standards"
+    ),
+  )
+
+# Calculate rowMeans for SRL-F F2: "Goal setting" to
+# facilitate further analysis
+srl_f_f3 <- as.data.frame(rowMeans(srl_f_f3))
+colnames(srl_f_f3)[1] <- "srl_f_f3"
+
+
+# SRL-F F4
+# Create data frame for factor SRL-F F4: "Task interest / value"
+srl_f_f4 <- subset_srl_f |>
+  select(
+    c(
+      "SRL_F_28_learn_new",
+      "SRL_F_29_learning_important",
+      "SRL_F_27_apply_learned"
+    ),
+  )
+
+# Calculate rowMeans for SRL-F F4: "Task interest / value" to
+# facilitate further analysis
+srl_f_f4 <- as.data.frame(rowMeans(srl_f_f4))
+colnames(srl_f_f4)[1] <- "srl_f_f4"
+
+
+# SUBSECTION SRL-P FACTORS
+
+# SRL-P F1
+# Create data frame for factor SRL-P F1: "Elaboration strategies"
+srl_p_f1 <- subset_srl_p |>
+  select(
+    c(
+      "SRL_P_50_lookup_unsure",
+      "SRL_P_51_knowl_gaps",
+      "SRL_P_52_challenge_job",
+      "SRL_P_43_collect_info",
+      "SRL_P_42_rel_knowl_now_past",
+      "SRL_P_44_ideas_prev_exp"
+    ),
+  )
+
+# Calculate rowMeans for SRL-P F1: "Elaboration strategies" to
+# facilitate further analysis
+srl_p_f1 <- as.data.frame(rowMeans(srl_p_f1))
+colnames(srl_p_f1)[1] <- "srl_p_f1"
+
+
+# SRL-P F2
+# Create data frame for factor SRL-P F2: "Task strategies"
+srl_p_f2 <- subset_srl_p |>
+  select(
+    c(
+      "SRL_P_36_plan_learning_goals",
+      "SRL_P_41_organize_time",
+      "SRL_P_37_rel_learn_now_past",
+      "SRL_P_38_change_strategies",
+      "SRL_P_39_make_notes",
+      "SRL_P_40_meaning_signif_info"
+    ),
+  )
+
+# Calculate rowMeans for SRL-P F1: "Task strategies" to
+# facilitate further analysis
+srl_p_f2 <- as.data.frame(rowMeans(srl_p_f2))
+colnames(srl_p_f2)[1] <- "srl_p_f2"
+
+
+# SRL-P F3
+# Create data frame for factor SRL-P F2: "Task strategies"
+srl_p_f3 <- subset_srl_p |>
+  select(
+    c(
+      "SRL_P_46_play_ideas",
+      "SRL_P_45_resources_start_pt",
+      "SRL_P_47_alt_ways_tasks"
+    ),
+  )
+
+# Calculate rowMeans for SRL-P F3: "Task strategies" to
+# facilitate further analysis
+srl_p_f3 <- as.data.frame(rowMeans(srl_p_f3))
+colnames(srl_p_f3)[1] <- "srl_p_f3"
+
+
+# SUBSECTION SRL-P FACTORS
+
+# SRL-SR F1
+# Create data frame for factor SRL-SR F1: "Self-satisfaction"
+srl_sr_f1 <- subset_srl_sr |>
+  select(
+    c(
+      "SRL_SR_59_things_learned_team",
+      "SRL_SR_60_new_info_impact",
+      "SRL_SR_58_big_picture"
+    ),
+  )
+
+# Calculate rowMeans for SRL-P F1: "Self-satisfaction" to
+# facilitate further analysis
+srl_sr_f1 <- as.data.frame(rowMeans(srl_sr_f1))
+colnames(srl_sr_f1)[1] <- "srl_sr_f1"
+
+
+# SRL-SR F2
+# Create data frame for factor SRL-SR F2: "Self-evaluation"
+srl_sr_f2 <- subset_srl_sr |>
+  select(
+    c(
+      "SRL_SR_56_dif_ways_task_done",
+      "SRL_SR_57_things_learned_finish",
+      "SRL_SR_55_task_done_well_learned"
+    ),
+  )
+
+# Calculate rowMeans for SRL-P F2: "Self-evaluation" to
+# facilitate further analysis
+srl_sr_f2 <- as.data.frame(rowMeans(srl_sr_f2))
+colnames(srl_sr_f2)[1] <- "srl_sr_f2"
+
+
+# SUBSECTION WLC FACTOR
+# Calculate rowMeans for WLC F1: "Workplace Learning Context" to
+# facilitate further analysis
+wlc_f1 <- as.data.frame(rowMeans(subset_wlc))
+colnames(wlc_f1)[1] <- "wlc_f1"
+
+
+# SUBSECTION SE FACTOR
+# Calculate rowMeans for SE F1: "Home-office self-efficacy" to
+# facilitate further analysis
+se <- as.data.frame(rowMeans(subset_se))
+colnames(se)[1] <- "se_f1"
+
+
+factors_regression <- as.data.frame(
+  c(
+    wla_f1,
+    srl_f_f1,
+    srl_f_f2,
+    srl_f_f3,
+    srl_f_f4,
+    srl_p_f1,
+    srl_p_f2,
+    srl_p_f3,
+    srl_sr_f1,
+    srl_sr_f2,
+    wlc_f1,
+    se
+  )
+)
 ```
 
 # Psychometrische Analyse
 
-## Interne Konsistenz {.tabset .tabset-fade .tabset-pills}
+## Deskriptive Prüfung der einzelnen Subskalen {.tabset .tabset-fade .tabset-pills}
 
-```{r}
-# Installiere und lade das Paket psych, das für die Berechnung verwendet wird
+```{r include=FALSE}
 library(psych)
 ```
-
 
 ### WLA {.unnumbered}
 
 ```{r}
+describe(subset_wla)
+```
+
+### SRL-F {.unnumbered}
+
+```{r}
+describe(subset_srl_f)
+```
+
+### SRL-P {.unnumbered}
+
+```{r}
+describe(subset_srl_p)
+```
+
+### SRL-SR {.unnumbered}
+
+```{r}
+describe(subset_srl_sr)
+```
+
+### WLC {.unnumbered}
+
+```{r}
+describe(subset_wlc)
+```
+
+### SE {.unnumbered}
+
+```{r}
+describe(subset_se)
+```
+
+## Interne Konsistenz {.tabset .tabset-fade .tabset-pills}
+
+### WLA {.unnumbered}
+
+```{r}
+# raw_alpha: 0.81
 alpha(subset_wla, check.keys = TRUE)
 ```
 
 ### SRL-F {.unnumbered}
 
 ```{r}
+# raw_alpha: 0.81
 alpha(subset_srl_f, check.keys = TRUE)
 ```
 
 ### SRL-P {.unnumbered}
 
 ```{r}
+# raw_alpha: 0.86
 alpha(subset_srl_p, check.keys = TRUE)
 ```
 
 ### SRL-SR {.unnumbered}
 
 ```{r}
+# raw_alpha: 0.83
 alpha(subset_srl_sr, check.keys = TRUE)
 ```
 
 ### WLC {.unnumbered}
 
 ```{r}
+# raw_alpha: 0.7
 alpha(subset_wlc, check.keys = TRUE)
 ```
 
 ### SE {.unnumbered}
 
 ```{r}
+# raw_alpha: 0.88
 alpha(subset_se, check.keys = TRUE)
 ```
 
@@ -482,9 +712,44 @@ alpha(subset_se, check.keys = TRUE)
 
 # Mediationsanalyse
 
+![Zusammenhangs-Übersicht über die Hypothesen der Arbeit](images/hypothesen.png)
+
 ## H1a: WLC → WLA
 
+H1a. Workplace learning context ist ein Prädiktor für die workplace learning activity (WLC → WLA). Es besteht ein positiver Zusammenhang zwischen (wahrgenommenen) Lernmöglichkeiten am Arbeitsplatz und durchgeführten Lernaktivitäten am Arbeitsplatz.
+
+Methode: Lineare Regressionsanalyse (Enter-Methode)
+
+```{r}
+# Calculate single linear regression regression model for
+# hypothesis H1a
+# Linear regression analysis (Enter method)  
+lm_h1a <- lm(wla_f1 ~ wlc_f1, data = factors_regression)
+summary(lm_h1a)
+```
+
 ## H1b: WLC → SRL
+
+```{r}
+# Calculate multiple linear regression regression model for
+# hypothesis H1b
+# Multiple linear regression analysis (Enter method)  
+lm_h1b <- lm(
+  wlc_f1 ~
+    srl_f_f1 +
+    srl_f_f2 +
+    srl_f_f3 +
+    srl_f_f4 +
+    srl_p_f1 +
+    srl_p_f2 +
+    srl_p_f3 +
+    srl_sr_f1 +
+    srl_sr_f2,
+  data = factors_regression
+)
+
+summary(lm_h1b)
+```
 
 ## H1c: SRL → WLA
 
