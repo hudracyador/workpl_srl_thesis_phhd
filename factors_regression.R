@@ -114,7 +114,7 @@ srl_p_f2 <- subset_srl_p |>
       "SRL_P_37_rel_learn_now_past",
       "SRL_P_38_change_strategies",
       "SRL_P_39_make_notes",
-      "SRL_P_40ing_signif_info"
+      "SRL_P_40_meaning_signif_info"
     ),
   )
 
@@ -208,19 +208,19 @@ factors_regression <- as.data.frame(
   )
 )
 
-rm(
-  wla_f1,
-  srl_f_f1,
-  srl_f_f2,
-  srl_f_f3,
-  srl_f_f4,
-  srl_p_f1,
-  srl_p_f2,
-  srl_p_f3,
-  srl_sr_f1,
-  srl_sr_f2,
-  wlc_f1,
-  se
-)
-
-View(factors_regression)
+# rm(
+#   wla_f1,
+#   srl_f_f1,
+#   srl_f_f2,
+#   srl_f_f3,
+#   srl_f_f4,
+#   srl_p_f1,
+#   srl_p_f2,
+#   srl_p_f3,
+#   srl_sr_f1,
+#   srl_sr_f2,
+#   wlc_f1,
+#   se
+# )
+# 
+# View(factors_regression)
