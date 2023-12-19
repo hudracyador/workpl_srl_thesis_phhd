@@ -1,5 +1,4 @@
 library(psych)
-library(multilevel)
 
 # Calculate single linear regression regression model for
 # hypothesis H1a
