@@ -125,7 +125,7 @@ colnames(srl_p_f2)[1] <- "srl_p_f2"
 
 
 # SRL-P F3
-# Create data frame for factor SRL-P F2: "Task strategies"
+# Create data frame for factor SRL-P F3: "Critical thinking"
 srl_p_f3 <- subset_srl_p |>
   select(
     c(
@@ -135,13 +135,13 @@ srl_p_f3 <- subset_srl_p |>
     ),
   )
 
-# Calculate rowMeans for SRL-P F3: "Task strategies" to
+# Calculate rowMeans for SRL-P F3: "Critical thinking" to
 # facilitate further analysis
 srl_p_f3 <- as.data.frame(rowMeans(srl_p_f3))
 colnames(srl_p_f3)[1] <- "srl_p_f3"
 
 
-# SUBSECTION SRL-P FACTORS
+# SUBSECTION SRL-SR FACTORS
 
 # SRL-SR F1
 # Create data frame for factor SRL-SR F1: "Self-satisfaction"
@@ -187,13 +187,23 @@ colnames(wlc_f1)[1] <- "wlc_f1"
 # SUBSECTION SE FACTOR
 # Calculate rowMeans for SE F1: "Home-office self-efficacy" to
 # facilitate further analysis
-se <- as.data.frame(rowMeans(subset_se))
-colnames(se)[1] <- "se_f1"
+se_f1 <- as.data.frame(rowMeans(subset_se))
+colnames(se_f1)[1] <- "se_f1"
 
 
+# SUBSECTION SRL SCORES
+# Get SRL scores by calculating row sums of individual observations
+srl_scores <- as.data.frame(rowSums(subset_srl))
+colnames(srl_scores)[1] <- "srl_scores"
+
+
+# Put all individual factor vectors in their respective data frames
+# into one single data frame
 factors_regression <- as.data.frame(
   c(
+    wlc_f1,
     wla_f1,
+    srl_scores,
     srl_f_f1,
     srl_f_f2,
     srl_f_f3,
@@ -203,10 +213,11 @@ factors_regression <- as.data.frame(
     srl_p_f3,
     srl_sr_f1,
     srl_sr_f2,
-    wlc_f1,
-    se
+    se_f1
   )
 )
+
+factors_regression
 
 # rm(
 #   wla_f1,
