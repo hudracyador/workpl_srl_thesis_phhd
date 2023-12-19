@@ -6,7 +6,7 @@ output:
   html_document:
     theme: darkly
     highlight: tango
-    df_print: paged
+    df_print: kable
     number_sections: yes
     toc: yes
     toc_float:
@@ -74,8 +74,11 @@ library(tidyr)
 Die Zielpopulation dieser Studie sind Wissensarbeiter. Teilnehmende für die Umfrage wurden durch Zufallsstichproben gewonnen. Die Stichprobe für die Datensammlung bestand aus Wissensarbeitern, die in einer Dienstleistungs-Unternehmensgruppe im Bankenbereich tätig sind (n = 3.290). In Abstimmung mit der zuständigen Abteilung für Informationssicherheit & Datenschutz wurde der Fragebogen anonymisiert und im intern abgestimmten und geprüften Tool MS Forms erstellt. Über einen Unternehmensgruppe-weiten Intranet-Post wurde der [Link zum Fragebogen](https://forms.office.com/e/QmQ1MncGbK) an alle potenziellen Teilnehmenden bereitgestellt.
 
 <details>
+
 <summary>Intranet-Beitrag zur Ausbringung des Fragebogens</summary>
+
 ![Intranet-Beitrag zur Ausbringung des Fragebogens](images/07_Beitrag_Intranet_Studie.jpg)
+
 </details>
 
 # Datenimport
@@ -83,9 +86,10 @@ Die Zielpopulation dieser Studie sind Wissensarbeiter. Teilnehmende für die Umf
 ```{r}
 # Import the fully prepared xlsx file into RStudio
 library(readxl)
-df_srl <- read_excel("02_20231207_srlwq_deu.xlsx", 
-                     sheet = "Tabelle1", range = "A1:BX133", 
-                     na = "NA")
+df_srl <- read_excel("02_20231207_srlwq_deu.xlsx",
+  sheet = "Tabelle1", range = "A1:BX133",
+  na = "NA"
+)
 
 # Save a duplicate of the original data set for later
 df_srl_dupl <- df_srl
@@ -99,14 +103,14 @@ ncol(df_srl)
 nrow(df_srl)
 
 # Create data frame with only missings
-df_srl_just_na <- df_srl[rowSums(is.na(df_srl)) > 0,]
+df_srl_just_na <- df_srl[rowSums(is.na(df_srl)) > 0, ]
 ```
 
 # Datenaufbereitung
 
-## Umbenennung der Variablennamen
+## Variablen umbenennen
 
-```{r echo=FALSE}
+```{r}
 library(dplyr)
 
 # Rename col descriptions to shorter and usable variable names
@@ -191,7 +195,7 @@ df_srl_col <- rename(
 )
 ```
 
-## Rekodierung der Variablenwerte von chr zu num
+## Variablenwerte rekodieren
 
 ```{r}
 library(scales)
@@ -320,9 +324,7 @@ df_srl_col_rec <- df_srl_col |>
   )
 ```
 
-## Imputation fehlender Werte (Missings)
-
-
+## Missings imputieren
 
 ```{r}
 library(missMethods)
@@ -344,65 +346,68 @@ percentmissing <- function(data) {
 
 nrow(df_srl_col_rec) # Test subjects before
 
-# Create a data.frame that contains all data records with a total 
+# Create a data.frame that contains all data records with a total
 # missing percentage of less than 90 percent
 df_srl_col_rec_na <-
-  df_srl_col_rec[percentmissing(df_srl_col_rec[,1:76]) < 90, ]
+  df_srl_col_rec[percentmissing(df_srl_col_rec[, 1:76]) < 90, ]
 
 nrow(df_srl_col_rec_na) # Test subjects after
 
 # Impute missings in columns 9:76 with mean method
 # The hereby generated data frame contains all scales
 # apart from personal details
-df_srl_imp_mean <- impute_mean(df_srl_col_rec_na[,9:76])
-
+df_srl_imp_mean <- impute_mean(df_srl_col_rec_na[, 9:76])
+```
+```{r results='hide'}
 # Round all <num> values from float to integer values
 df_srl_imp_mean |>
   mutate(
     across(where(is.numeric), round)
   )
+```
 
+```{r}
 # Truncate all integer values with decimal points to real integers
 df_srl_imp_mean <- trunc(df_srl_imp_mean)
 
 # Verify that there are no missings left in data frame containing all scales
 # apart from personal details
-which(is.na(df_srl_imp_mean)==TRUE)
+which(is.na(df_srl_imp_mean) == TRUE)
 # Valid if result is "integer(0)"
 
 # Combine columns 1:8 and 9:76 for there were no missings removed in cols 1:8
-df_srl_imp_mean_comb <- bind_cols(df_srl_col_rec_na[,1:8], df_srl_imp_mean)
+df_srl_imp_mean_comb <- bind_cols(df_srl_col_rec_na[, 1:8], df_srl_imp_mean)
 ```
 
-## Erstellung von Subsets für die jeweiligen Subskalen
+## Subsets der Subskalen erstellen
 
 ```{r}
 # Create a subset for every individual scale inside the questionnaire
 # to facilitate further analysis of the data
 
 # wla subset
-subset_wla <- df_srl_imp_mean_comb |> select(c(starts_with("WLA"),))
+subset_wla <- df_srl_imp_mean_comb |> select(c(starts_with("WLA"), ))
 
 # srl subset (all srl scales)
-subset_srl <- df_srl_imp_mean_comb |> select(c(starts_with("SRL"),))
+subset_srl <- df_srl_imp_mean_comb |> select(c(starts_with("SRL"), ))
 
 # srl_f subset
-subset_srl_f <- df_srl_imp_mean_comb |> select(c(starts_with("SRL_F"),))
+subset_srl_f <- df_srl_imp_mean_comb |> select(c(starts_with("SRL_F"), ))
 
 # srl_p subset
-subset_srl_p <- df_srl_imp_mean_comb |> select(c(starts_with("SRL_P"),))
+subset_srl_p <- df_srl_imp_mean_comb |> select(c(starts_with("SRL_P"), ))
 
 # srl_sr subset
-subset_srl_sr <- df_srl_imp_mean_comb |> select(c(starts_with("SRL_SR"),))
+subset_srl_sr <- df_srl_imp_mean_comb |> select(c(starts_with("SRL_SR"), ))
 
 # wlc subset
-subset_wlc <- df_srl_imp_mean_comb |> select(c(starts_with("WLC"),))
+subset_wlc <- df_srl_imp_mean_comb |> select(c(starts_with("WLC"), ))
 
 # se subset
-subset_se <- df_srl_imp_mean_comb |> select(c(starts_with("SE"),))
+subset_se <- df_srl_imp_mean_comb |> select(c(starts_with("SE"), ))
 ```
 
-## Zusammenführung von Einzelitems in Faktoren
+## Einzelitems zu Faktoren
 
 Im für die Erstellung und psychometrische Analyse des Fragebogens zugrundeliegenden Papers @Fontana.2015 haben die Autoren mittels explorativer Faktorenanalyse die Items aus den jeweiligen Subskalen einige wenige Faktoren reduziert. Der folgende Code fasst die Faktoren aus den zuvor erstellten Subsets des Gesamt-Fragebogens zusammen (Schritt 1) und fasst danach alle Zeilen-Mittelwerte in einer Spalte zusammen, sodass die einzelnen Faktoren im Rahmen von Regregessions-/Mediationsanalysen untersucht werden können.
 
@@ -534,7 +539,7 @@ colnames(srl_p_f2)[1] <- "srl_p_f2"
 
 
 # SRL-P F3
-# Create data frame for factor SRL-P F2: "Task strategies"
+# Create data frame for factor SRL-P F3: "Critical thinking"
 srl_p_f3 <- subset_srl_p |>
   select(
     c(
@@ -544,13 +549,13 @@ srl_p_f3 <- subset_srl_p |>
     ),
   )
 
-# Calculate rowMeans for SRL-P F3: "Task strategies" to
+# Calculate rowMeans for SRL-P F3: "Critical thinking" to
 # facilitate further analysis
 srl_p_f3 <- as.data.frame(rowMeans(srl_p_f3))
 colnames(srl_p_f3)[1] <- "srl_p_f3"
 
 
-# SUBSECTION SRL-P FACTORS
+# SUBSECTION SRL-SR FACTORS
 
 # SRL-SR F1
 # Create data frame for factor SRL-SR F1: "Self-satisfaction"
@@ -596,13 +601,23 @@ colnames(wlc_f1)[1] <- "wlc_f1"
 # SUBSECTION SE FACTOR
 # Calculate rowMeans for SE F1: "Home-office self-efficacy" to
 # facilitate further analysis
-se <- as.data.frame(rowMeans(subset_se))
-colnames(se)[1] <- "se_f1"
+se_f1 <- as.data.frame(rowMeans(subset_se))
+colnames(se_f1)[1] <- "se_f1"
 
 
+# SUBSECTION SRL SCORES
+# Get SRL scores by calculating row sums of individual observations
+srl_scores <- as.data.frame(rowSums(subset_srl))
+colnames(srl_scores)[1] <- "srl_scores"
+
+
+# Put all individual factor vectors in their respective data frames
+# into one single data frame
 factors_regression <- as.data.frame(
   c(
+    wlc_f1,
     wla_f1,
+    srl_scores,
     srl_f_f1,
     srl_f_f2,
     srl_f_f3,
@@ -612,10 +627,11 @@ factors_regression <- as.data.frame(
     srl_p_f3,
     srl_sr_f1,
     srl_sr_f2,
-    wlc_f1,
-    se
+    se_f1
   )
 )
+
+library(dplyr)
 ```
 
 # Psychometrische Analyse
@@ -706,14 +722,27 @@ alpha(subset_wlc, check.keys = TRUE)
 alpha(subset_se, check.keys = TRUE)
 ```
 
-## Exploratorische Faktorenanalyse
-
 ## Konvergenzvalidität
+```{r df_print = 'kable'}
+library(xtable)
 
-# Mediationsanalyse
+# Calculate Pearson´s correlation between all factors and SRL score
+conv_valid <- round(cor(factors_regression, method = "pearson"), 2)
+
+upper_conv_valid <- conv_valid
+upper_conv_valid[lower.tri(conv_valid)] <- ""
+upper_conv_valid <- as.data.frame(upper_conv_valid)
+upper_conv_valid
+```
+
+# Mediationsanalyse {.tabset .tabset-fade .tabset-pills}
+
+Die im zugrundeliegenden Paper [@Milligan.2015] aufgestellten Hypothesen H1a-d sowie die eigens aufgestellte Hypothese H2 soll im folgenden überprüft werden.
 
 ![Zusammenhangs-Übersicht über die Hypothesen der Arbeit](images/hypothesen.png)
 
+
+______________
 ## H1a: WLC → WLA
 
 H1a. Workplace learning context ist ein Prädiktor für die workplace learning activity (WLC → WLA). Es besteht ein positiver Zusammenhang zwischen (wahrgenommenen) Lernmöglichkeiten am Arbeitsplatz und durchgeführten Lernaktivitäten am Arbeitsplatz.
@@ -723,17 +752,21 @@ Methode: Lineare Regressionsanalyse (Enter-Methode)
 ```{r}
 # Calculate single linear regression regression model for
 # hypothesis H1a
-# Linear regression analysis (Enter method)  
+# Linear regression analysis (Enter method)
 lm_h1a <- lm(wla_f1 ~ wlc_f1, data = factors_regression)
 summary(lm_h1a)
 ```
 
 ## H1b: WLC → SRL
 
+H1b. Der workplace learning context ist ein Prädiktor für einige oder alle Teilprozesse des selbstregulierten Lernens (WLC → SRL). Es besteht eine positive Beziehung zwischen dem wahrgenommenen workplace learning context und dem berichteten SRL-Verhalten (einige oder alle Teilprozesse).  
+
+Methode: Multiple lineare Regressionsanalyse (Enter-Methode)
+
 ```{r}
 # Calculate multiple linear regression regression model for
 # hypothesis H1b
-# Multiple linear regression analysis (Enter method)  
+# Multiple linear regression analysis (Enter method)
 lm_h1b <- lm(
   wlc_f1 ~
     srl_f_f1 +
@@ -753,8 +786,114 @@ summary(lm_h1b)
 
 ## H1c: SRL → WLA
 
+H1c. Einige oder alle Teilprozesse des selbstregulierten Lernens sind Prädiktoren für die workplace learning activity (SRL → WLA). Es besteht ein positiver Zusammenhang zwischen dem berichteten SRL-Verhalten (einige oder alle Teilprozesse) und den durchgeführten Lernaktivitäten am Arbeitsplatz.  
+
+Methode: Multiple lineare Regressionsanalyse (Backwards-Methode) 
+
+PLATZHALTER: Hier kommen Ergebnisse bis 19.12.2023, 12 Uhr rein!
+
+```{r}
+
+```
+
+
 ## H1d: WLC → SRL → WLA
 
+H1d. Die Teilprozesse des selbstregulierten Lernens vermitteln die Beziehung zwischen dem workplace learning context und der workplace learning activity (WLC → SRL → WLA). Einige (oder alle) Teilprozesse des selbstgesteuerten Lernens beeinflussen das Niveau der Lernaktivitäten am Arbeitsplatz in Abhängigkeit von den Lernmöglichkeiten, die den Beschäftigten am Arbeitsplatz geboten werden. 
+
+Methode: Sobel-Test 
+
+```{r}
+# Calculate Sobel's test values for hypothesis H1d
+library(bda)
+
+# srl_f_f1
+med_srl_f_f1 <- mediation.test(
+factors_regression$wla_f1,
+factors_regression$srl_f_f1,
+factors_regression$wlc_f1
+)
+med_srl_f_f1[1]
+
+# srl_f_f2
+med_srl_f_f2 <- mediation.test(
+  factors_regression$wla_f1,
+  factors_regression$srl_f_f1,
+  factors_regression$wlc_f1
+)
+med_srl_f_f2[1]
+
+# srl_f_f3
+med_srl_f_f3 <- mediation.test(
+  factors_regression$wla_f1,
+  factors_regression$srl_f_f1,
+  factors_regression$wlc_f1
+)
+med_srl_f_f3[1]
+
+# srl_f_f4
+med_srl_f_f4 <- mediation.test(
+  factors_regression$wla_f1,
+  factors_regression$srl_f_f4,
+  factors_regression$wlc_f1
+)
+med_srl_f_f4[1]
+
+# srl_p_f1
+med_srl_p_f1 <- mediation.test(
+  factors_regression$wla_f1,
+  factors_regression$srl_p_f1,
+  factors_regression$wlc_f1
+)
+med_srl_p_f1[1]
+
+# srl_p_f2
+med_srl_p_f2 <- mediation.test(
+  factors_regression$wla_f1,
+  factors_regression$srl_p_f2,
+  factors_regression$wlc_f1
+)
+med_srl_p_f2[1]
+
+# srl_p_f3
+med_srl_p_f3 <- mediation.test(
+  factors_regression$wla_f1,
+  factors_regression$srl_p_f3,
+  factors_regression$wlc_f1
+)
+med_srl_p_f3[1]
+
+
+# srl_sr_f1
+med_srl_sr_f1 <- mediation.test(
+  factors_regression$wla_f1,
+  factors_regression$srl_sr_f1,
+  factors_regression$wlc_f1
+)
+med_srl_sr_f1[1]
+
+# srl_sr_f2
+med_srl_sr_f2 <- mediation.test(
+  factors_regression$wla_f1,
+  factors_regression$srl_sr_f2,
+  factors_regression$wlc_f1
+)
+med_srl_sr_f2[1]
+```
+
+
 ## H2: SRL → SE
+
+H2. Einige oder alle Teilprozesse des selbstregulierten Lernens sind Prädiktoren für den Grad der wahrgenommenen Selbstwirksamkeit im Home-Office (SRL → SE). Es besteht ein positiver Zusammenhang zwischen dem berichteten SRL-Verhalten (einige oder alle Teilprozesse) und einem hohen Grad an wahrgenommener Selbstwirksamkeit. 
+
+Methode: Multiple lineare Regressionsanalyse (Backwards-Methode) 
+
+PLATZHALTER: Hier kommen Ergebnisse bis 19.12.2023, 12 Uhr rein!
+
+```{r}
+
+```
+
+
 
 # Quellenangaben {.unnumbered}
