@@ -31,7 +31,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Voraussetzungen {.unnumbered}
 
-Alle verwendeten Dateien und Code sind in einem gesonderten [GitHub Repository](https://github.com/hudracyador/workpl_srl_thesis_phhd) verfügbar.
+Alle verwendeten Dateien und Code sind in einem gesonderten [GitHub-Repository](https://github.com/hudracyador/workpl_srl_thesis_phhd) verfügbar.
 
 ## Verwendete Software-Versionen {.unnumbered}
 
@@ -40,7 +40,8 @@ Die bei Erstellung dieses Dokuments und in Datenaufbereitung sowie -analyse zugr
 ```{r tidy=FALSE, echo=FALSE}
 xfun::session_info(c(
   "knitr", "rmarkdown", "xfun", "readxl", "dplyr", "scales", "missMethods",
-  "psych", "ggplot2", "tidyverse", "tibble", "tidyr"
+  "psych", "ggplot2", "tidyverse", "tibble", "tidyr",
+  "psych", "bda", "readxl", "dplyr", "scales", "missMethods", "corrr", "ggcorrplot", "FactoMineR", "factoextra", "xtable"
 ), dependencies = FALSE)
 ```
 
@@ -58,15 +59,17 @@ RStudio/2023.09.1+494 Chrome/116.0.5845.190 Electron/26.2.4 Safari/537.36
 Die folgenden Bibliotheken bzw. Packages kommen im Rahmen der Datenaufbereitung und -analyse zum Einsatz.
 
 ``` yaml
+library(psych)
+library(bda)
 library(readxl)
 library(dplyr)
 library(scales)
 library(missMethods)
-library(psych)
-library(ggplot2)
-library(tidyverse)
-library(tibble)
-library(tidyr)
+library(corrr)
+library(ggcorrplot)
+library("FactoMineR")
+library(factoextra)
+library(xtable)
 ```
 
 # Datenerhebung
@@ -379,7 +382,7 @@ which(is.na(df_srl_imp_mean) == TRUE)
 df_srl_imp_mean_comb <- bind_cols(df_srl_col_rec_na[, 1:8], df_srl_imp_mean)
 ```
 
-## Subsets der Subskalen erstellen
+## Skalen-Subsets erstellen
 
 ```{r}
 # Create a subset for every individual scale inside the questionnaire
@@ -735,7 +738,7 @@ upper_conv_valid <- as.data.frame(upper_conv_valid)
 upper_conv_valid
 ```
 
-# Mediationsanalyse {.tabset .tabset-fade .tabset-pills}
+# Regression / Mediation {.tabset .tabset-fade .tabset-pills}
 
 Die im zugrundeliegenden Paper [@Milligan.2015] aufgestellten Hypothesen H1a-d sowie die eigens aufgestellte Hypothese H2 soll im folgenden überprüft werden.
 
