@@ -32,8 +32,7 @@ summary(lm_h1b)
 
 library(olsrr)
 
-lm_h1c <- factors_regression |> 
-  ols_step_backward_p(
+lm_h1c <- lm(
   wlc_f1 ~
     srl_f_f1 +
     srl_f_f2 +
@@ -44,8 +43,11 @@ lm_h1c <- factors_regression |>
     srl_p_f3 +
     srl_sr_f1 +
     srl_sr_f2,
-  prem = 
+  data = factors_regression
 )
+
+lm_h1c_backw <- ols_step_backward_p(lm_h1c)
+lm_h1c_backw
 
 # Calculate Sobel's test values for hypothesis H1d
 library(bda)
@@ -138,3 +140,26 @@ med_srl_sr_f2
 # )
 # 
 # View(sobel_comparison)
+
+# Calculate multiple linear regression regression model for
+# hypothesis H2
+# Multiple linear regression analysis (Backwards stepwise method)  
+
+library(olsrr)
+
+lm_h2 <- lm(
+  se_f1 ~
+    srl_f_f1 +
+    srl_f_f2 +
+    srl_f_f3 +
+    srl_f_f4 +
+    srl_p_f1 +
+    srl_p_f2 +
+    srl_p_f3 +
+    srl_sr_f1 +
+    srl_sr_f2,
+  data = factors_regression
+)
+
+lm_h2_backw <- ols_step_backward_p(lm_h2)
+lm_h2_backw
