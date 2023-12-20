@@ -28,8 +28,12 @@ summary(lm_h1b)
 
 # Calculate multiple linear regression regression model for
 # hypothesis H1c
-# Multiple linear regression analysis (Backwards method)  
-lm_h1c <- lm(
+# Multiple linear regression analysis (Backwards stepwise method)  
+
+library(olsrr)
+
+lm_h1c <- factors_regression |> 
+  ols_step_backward_p(
   wlc_f1 ~
     srl_f_f1 +
     srl_f_f2 +
@@ -40,7 +44,7 @@ lm_h1c <- lm(
     srl_p_f3 +
     srl_sr_f1 +
     srl_sr_f2,
-  data = factors_regression
+  prem = 
 )
 
 # Calculate Sobel's test values for hypothesis H1d
