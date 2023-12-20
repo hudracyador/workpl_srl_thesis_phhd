@@ -6,7 +6,7 @@ output:
   html_document:
     theme: darkly
     highlight: tango
-    df_print: kable
+    df_print: paged
     number_sections: yes
     toc: yes
     toc_float:
@@ -31,7 +31,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Voraussetzungen {.unnumbered}
 
-Alle verwendeten Dateien und Code sind in einem gesonderten [GitHub-Repository](https://github.com/hudracyador/workpl_srl_thesis_phhd) verfügbar.
+Alle verwendeten Dateien und Code sind in einem gesonderten <a href="https://github.com/hudracyador/workpl_srl_thesis_phhd" target="_blank">GitHub-Repository</a> verfügbar. **Hier sind im Ordner "materialien" auch alle zugrundeliegenden Papers und Dokumente zu finden.**
 
 ## Verwendete Software-Versionen {.unnumbered}
 
@@ -48,10 +48,10 @@ xfun::session_info(c(
 RStudio
 
 ``` yaml
-RStudio 2023.09.1+494 "Desert Sunflower" Release 
-(cd7011dce393115d3a7c3db799dda4b1c7e88711, 2023-10-16) for windows
+RStudio 2023.12.0+369 "Ocean Storm" Release 
+(33206f75bd14d07d84753f965eaa24756eda97b7, 2023-12-14) for windows
 Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) 
-RStudio/2023.09.1+494 Chrome/116.0.5845.190 Electron/26.2.4 Safari/537.36
+RStudio/2023.12.0+369 Chrome/116.0.5845.190 Electron/26.2.4 Safari/537.36
 ```
 
 ## Benötigte R-Libraries {.unnumbered}
@@ -361,6 +361,7 @@ nrow(df_srl_col_rec_na) # Test subjects after
 # apart from personal details
 df_srl_imp_mean <- impute_mean(df_srl_col_rec_na[, 9:76])
 ```
+
 ```{r results='hide'}
 # Round all <num> values from float to integer values
 df_srl_imp_mean |>
@@ -726,6 +727,7 @@ alpha(subset_se, check.keys = TRUE)
 ```
 
 ## Konvergenzvalidität
+
 ```{r df_print = 'kable'}
 library(xtable)
 
@@ -744,8 +746,8 @@ Die im zugrundeliegenden Paper [@Milligan.2015] aufgestellten Hypothesen H1a-d s
 
 ![Zusammenhangs-Übersicht über die Hypothesen der Arbeit](images/hypothesen.png)
 
+------------------------------------------------------------------------
 
-______________
 ## H1a: WLC → WLA
 
 H1a. Workplace learning context ist ein Prädiktor für die workplace learning activity (WLC → WLA). Es besteht ein positiver Zusammenhang zwischen (wahrgenommenen) Lernmöglichkeiten am Arbeitsplatz und durchgeführten Lernaktivitäten am Arbeitsplatz.
@@ -762,7 +764,7 @@ summary(lm_h1a)
 
 ## H1b: WLC → SRL
 
-H1b. Der workplace learning context ist ein Prädiktor für einige oder alle Teilprozesse des selbstregulierten Lernens (WLC → SRL). Es besteht eine positive Beziehung zwischen dem wahrgenommenen workplace learning context und dem berichteten SRL-Verhalten (einige oder alle Teilprozesse).  
+H1b. Der workplace learning context ist ein Prädiktor für einige oder alle Teilprozesse des selbstregulierten Lernens (WLC → SRL). Es besteht eine positive Beziehung zwischen dem wahrgenommenen workplace learning context und dem berichteten SRL-Verhalten (einige oder alle Teilprozesse).
 
 Methode: Multiple lineare Regressionsanalyse (Enter-Methode)
 
@@ -789,22 +791,46 @@ summary(lm_h1b)
 
 ## H1c: SRL → WLA
 
-H1c. Einige oder alle Teilprozesse des selbstregulierten Lernens sind Prädiktoren für die workplace learning activity (SRL → WLA). Es besteht ein positiver Zusammenhang zwischen dem berichteten SRL-Verhalten (einige oder alle Teilprozesse) und den durchgeführten Lernaktivitäten am Arbeitsplatz.  
+H1c. Einige oder alle Teilprozesse des selbstregulierten Lernens sind Prädiktoren für die workplace learning activity (SRL → WLA). Es besteht ein positiver Zusammenhang zwischen dem berichteten SRL-Verhalten (einige oder alle Teilprozesse) und den durchgeführten Lernaktivitäten am Arbeitsplatz.
 
-Methode: Multiple lineare Regressionsanalyse (Backwards-Methode) 
-
-PLATZHALTER: Hier kommen Ergebnisse bis 19.12.2023, 12 Uhr rein!
+Methode: Multiple lineare Regressionsanalyse (Backwards-Methode)
 
 ```{r}
+# Calculate multiple linear regression regression model for
+# hypothesis H1c
+# Multiple linear regression analysis (Backwards stepwise method)  
 
+library(olsrr)
+
+lm_h1c <- lm(
+  wlc_f1 ~
+    srl_f_f1 +
+    srl_f_f2 +
+    srl_f_f3 +
+    srl_f_f4 +
+    srl_p_f1 +
+    srl_p_f2 +
+    srl_p_f3 +
+    srl_sr_f1 +
+    srl_sr_f2,
+  data = factors_regression
+)
+
+lm_h1c_backw <- ols_step_backward_p(lm_h1c)
+lm_h1c_backw
+
+# Factors retained: 
+# SRL-F F2
+# SRL-F F4
+# SRL-P F1
+# SRL-SR F2
 ```
-
 
 ## H1d: WLC → SRL → WLA
 
-H1d. Die Teilprozesse des selbstregulierten Lernens vermitteln die Beziehung zwischen dem workplace learning context und der workplace learning activity (WLC → SRL → WLA). Einige (oder alle) Teilprozesse des selbstgesteuerten Lernens beeinflussen das Niveau der Lernaktivitäten am Arbeitsplatz in Abhängigkeit von den Lernmöglichkeiten, die den Beschäftigten am Arbeitsplatz geboten werden. 
+H1d. Die Teilprozesse des selbstregulierten Lernens vermitteln die Beziehung zwischen dem workplace learning context und der workplace learning activity (WLC → SRL → WLA). Einige (oder alle) Teilprozesse des selbstgesteuerten Lernens beeinflussen das Niveau der Lernaktivitäten am Arbeitsplatz in Abhängigkeit von den Lernmöglichkeiten, die den Beschäftigten am Arbeitsplatz geboten werden.
 
-Methode: Sobel-Test 
+Methode: Sobel-Test
 
 ```{r}
 # Calculate Sobel's test values for hypothesis H1d
@@ -884,19 +910,37 @@ med_srl_sr_f2 <- mediation.test(
 med_srl_sr_f2[1]
 ```
 
-
 ## H2: SRL → SE
 
-H2. Einige oder alle Teilprozesse des selbstregulierten Lernens sind Prädiktoren für den Grad der wahrgenommenen Selbstwirksamkeit im Home-Office (SRL → SE). Es besteht ein positiver Zusammenhang zwischen dem berichteten SRL-Verhalten (einige oder alle Teilprozesse) und einem hohen Grad an wahrgenommener Selbstwirksamkeit. 
+H2. Einige oder alle Teilprozesse des selbstregulierten Lernens sind Prädiktoren für den Grad der wahrgenommenen Selbstwirksamkeit im Home-Office (SRL → SE). Es besteht ein positiver Zusammenhang zwischen dem berichteten SRL-Verhalten (einige oder alle Teilprozesse) und einem hohen Grad an wahrgenommener Selbstwirksamkeit.
 
-Methode: Multiple lineare Regressionsanalyse (Backwards-Methode) 
-
-PLATZHALTER: Hier kommen Ergebnisse bis 19.12.2023, 12 Uhr rein!
+Methode: Multiple lineare Regressionsanalyse (Backwards-Methode)
 
 ```{r}
+library(olsrr)
 
+lm_h2 <- lm(
+  se_f1 ~
+    srl_f_f1 +
+    srl_f_f2 +
+    srl_f_f3 +
+    srl_f_f4 +
+    srl_p_f1 +
+    srl_p_f2 + 
+    srl_p_f3 +
+    srl_sr_f1 +
+    srl_sr_f2,
+  data = factors_regression
+)
+
+lm_h2_backw <- ols_step_backward_p(lm_h2)
+lm_h2_backw
+
+# Factors retained: 
+# SRL-F F2
+# SRL-F F3
+# SRL-F F4
+# SRL-P F1
 ```
-
-
 
 # Quellenangaben {.unnumbered}
