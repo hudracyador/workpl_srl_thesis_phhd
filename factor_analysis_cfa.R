@@ -1,3 +1,4 @@
+## library(ffmvm)
 library(lavaan)
 
 model1 <- "
@@ -15,3 +16,6 @@ srl_sr_f2 =~ SRL_SR_56_dif_ways_task_done + SRL_SR_57_things_learned_finish + SR
 model.fit1 <- cfa(model=model1, data=df_srl_imp_mean_comb, std.lv = TRUE)
 
 summary(model.fit1, fit.measures = TRUE, standardized=TRUE)
+
+mi <- modindices(model.fit1)
+mi[mi$mi > 10, ]
