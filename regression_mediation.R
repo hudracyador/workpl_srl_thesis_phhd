@@ -49,6 +49,15 @@ lm_h1c <- lm(
 lm_h1c_backw <- ols_step_backward_p(lm_h1c)
 lm_h1c_backw
 
+lm_h1c_var_rm <- lm(
+  wlc_f1 ~
+    srl_f_f2 +
+    srl_f_f4 +
+    srl_p_f1 +
+    srl_sr_f2,
+  data = factors_regression
+)
+
 # Calculate Sobel's test values for hypothesis H1d
 library(bda)
 
