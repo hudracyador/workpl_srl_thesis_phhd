@@ -1,12 +1,7 @@
-library(psych)
 library(ggplot2)
-library(tidyverse)
-library(conflicted)
-library(likert)
 
-# Package conflicts that will be handled by library 'conflicted'
-# ✖ ggplot2::%+%()   masks psych::%+%()
-# ✖ ggplot2::alpha() masks psych::alpha()
-# ✖ dplyr::filter()  masks stats::filter()
-# ✖ dplyr::lag()     masks stats::lag()
+age <- as.data.frame(df_srl_imp_mean_comb$PD_01_age)
 
+ggplot(age, aes(x=df_srl_imp_mean_comb$PD_01_age)) +
+  geom_histogram()
+colnames(age)
