@@ -11,7 +11,6 @@ summary(lm_h1a)
 # hypothesis H1b
 # Multiple linear regression analysis (Enter method)  
 lm_h1b <- lm(
-  wlc_f1 ~
     srl_f_f1 +
     srl_f_f2 +
     srl_f_f3 +
@@ -20,7 +19,8 @@ lm_h1b <- lm(
     srl_p_f2 +
     srl_p_f3 +
     srl_sr_f1 +
-    srl_sr_f2,
+    srl_sr_f2 ~
+      wlc_f1,
   data = factors_regression
 )
 
