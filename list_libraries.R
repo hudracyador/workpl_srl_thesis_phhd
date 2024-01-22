@@ -16,6 +16,9 @@ unloadNamespace("tidyr")
 # Empty Workspace
 rm(list = ls())
 
+# Detach all loaded packages
+invisible(lapply(paste0('package:', names(sessionInfo()$otherPkgs)), detach, character.only=TRUE, unload=TRUE))
+
 # Find out classes of specific data frame
 sapply(df_srl_na_col, class)
 
