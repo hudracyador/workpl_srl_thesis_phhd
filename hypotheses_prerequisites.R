@@ -12,7 +12,7 @@ konfidenz <- 0.95
 nachkomma <- 3
 
 # data.frame für grafische Linearitätsprüfung
-
+# 
 vars_h1a <- data.frame(factors_regression$wla_f1,
                        factors_regression$wlc_f1)
 
@@ -35,18 +35,26 @@ ols_plot_resid_hist(lm_h1a) # Abweichungen im Rahmen
 ols_plot_resid_qq(lm_h1a) # Abweichungen im Rahmen
 
 # Shapiro-Wilk-Test (Hypothesentest auf Normalverteilung)
-shapiro.test(lm_h1a$residuals) # p-value = .8217
+shapiro.test(lm_h1a$residuals) # p-value = .5539
+ks.test(lm_h1a$residuals, # p-value = .8979
+        "pnorm", 
+        mean=mean(lm_h1a$residuals), 
+        sd=sd(lm_h1a$residuals))
 
 # Schiefe (Wert < 1) & Kurtosis (Wert < 3)
-skewness(lm_h1a$residuals) #  .051
-kurtosis(lm_h1a$residuals) # 2.698
+skewness(lm_h1a$residuals) #  .087
+kurtosis(lm_h1a$residuals) # 3.4
 
+agostino.test(lm_h1a$residuals)
+anscombe.test(lm_h1a$residuals)
 
 # 2. Homoskedastizität / Varianzhomogenität
 
 # Streudiagramm Fitted Values und Residuen
 ols_plot_resid_fit(lm_h1a)
 ols_test_breusch_pagan(lm_h1a)
+
+plot(fitted.values(lm_h1a),residuals(lm_h1a))
 
 # Breusch-Pagan-Test (Hypothesentest auf Homoskedastizität)
 bptest(lm_h1a)
@@ -74,10 +82,16 @@ ols_plot_resid_stud(lm_h1a)
 # Cook's Distanz
 
 ols_plot_cooksd_chart(lm_h1a)
+ols_plot_cooksd_chart(lm_h1b)
+ols_plot_cooksd_chart(lm_h1c)
+ols_plot_cooksd_chart(lm_h1c_var_rm)
 
 # Outlier & Leverage
 
 ols_plot_resid_lev(lm_h1a)
+ols_plot_resid_lev(lm_h1b)
+ols_plot_resid_lev(lm_h1c)
+ols_plot_resid_lev(lm_h1c_var_rm)
 
 # DiffBeta
 
