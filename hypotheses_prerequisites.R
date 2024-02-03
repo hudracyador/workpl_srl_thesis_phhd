@@ -15,7 +15,7 @@ konfidenz <- 0.95
 nachkomma <- 3
 
 # 1.1 Unstandardisierte Ergebnisse
-summ(lm_h1a, confint=TRUE, ci.width = konfidenz,
+summ(lm_h1c_var_rm, confint=TRUE, ci.width = konfidenz,
      digits = nachkomma)
 
 # 1.2 Standardisierte Ergebnisse
@@ -40,25 +40,25 @@ ols_plot_cooksd_chart(lm_h1b_sr_f1) # 41, 80, 101, 120, 121
 ols_plot_cooksd_chart(lm_h1b_sr_f2) # 122, 102, 42
 
 ols_plot_cooksd_chart(lm_h1c) # 6, 15, 30, 31, 40, 51, 74, 90, 103, 107, 111
-ols_plot_cooksd_chart(lm_h1c_var_rm) # 51, 31, 6, 61, 15
+ols_plot_cooksd_chart(lm_h1c_var_rm) # 6, 30, 31, 51, 61, 119
 
-# # Outlier & Leverage
-# 
-# ols_plot_resid_lev(lm_h1a) # O&L: 61; L: 121
-# 
-# # # ols_plot_resid_lev(lm_h1b)
-# # ols_plot_resid_lev(lm_h1b_f_f1) # O&L: 42, 62; L: 121;
-# # ols_plot_resid_lev(lm_h1b_f_f2) # O&L: 102, 42; L: 121
-# # ols_plot_resid_lev(lm_h1b_f_f3) # O&L: 122; L: 121
-# # ols_plot_resid_lev(lm_h1b_f_f4) # O&L: 31, 120, 6, 98, 45, 104
-# # ols_plot_resid_lev(lm_h1b_p_f1) # O&L: 122, 102; L: 121
-# # ols_plot_resid_lev(lm_h1b_p_f2) # O&L: 29, 122; L: 121
-# # ols_plot_resid_lev(lm_h1b_p_f3) # O&L: 20; L: 121
-# # ols_plot_resid_lev(lm_h1b_sr_f1) # L: 121
-# # ols_plot_resid_lev(lm_h1b_sr_f2) # O&L: 122; L: 121
-# 
-# ols_plot_resid_lev(lm_h1c) # O: 51, 31, 15
-# ols_plot_resid_lev(lm_h1c_var_rm) # O&L: 51; O: 31, 6
+# Outlier & Leverage
+
+ols_plot_resid_lev(lm_h1a) # O&L: 61; L: 121
+
+# ols_plot_resid_lev(lm_h1b)
+ols_plot_resid_lev(lm_h1b_f_f1) # O&L: 42, 62; L: 121;
+ols_plot_resid_lev(lm_h1b_f_f2) # O&L: 102, 42; L: 121
+ols_plot_resid_lev(lm_h1b_f_f3) # O&L: 122; L: 121
+ols_plot_resid_lev(lm_h1b_f_f4) # O&L: 31, 120, 6, 98, 45, 104
+ols_plot_resid_lev(lm_h1b_p_f1) # O&L: 122, 102; L: 121
+ols_plot_resid_lev(lm_h1b_p_f2) # O&L: 29, 122; L: 121
+ols_plot_resid_lev(lm_h1b_p_f3) # O&L: 20; L: 121
+ols_plot_resid_lev(lm_h1b_sr_f1) # L: 121
+ols_plot_resid_lev(lm_h1b_sr_f2) # O&L: 122; L: 121
+
+ols_plot_resid_lev(lm_h1c) # O: 51, 31, 15
+ols_plot_resid_lev(lm_h1c_var_rm) # O&L: 51; O: 31, 6
 
 
 # SECTION: PREREQUISITES FOR REGRESSION/MEDIATION Hs (H1a-H1c)
@@ -145,9 +145,9 @@ bptest(lm_h1c_var_rm, studentize = TRUE)
 
 # 3. Linearität
 
-# # Paarweises Streudiagramm
-# pairs(vars_h1a, pch = 19, lower.panel = NULL)
-# pairs(vars_h1b, pch = 19, lower.panel = NULL)
+# Paarweises Streudiagramm
+pairs(vars_h1a, pch = 19, lower.panel = NULL)
+pairs(vars_h1b, pch = 19, lower.panel = NULL)
 
 # Rainbow-Test
 raintest(lm_h1a)
