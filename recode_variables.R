@@ -9,7 +9,7 @@ df_srl_col$PD_04_work_yrs <- as.numeric(
 )
 
 # Check column PD_04_work_yrs visually
-View(df_srl_col)
+# View(df_srl_col)
 
 # Check if class of all values in column PD_04_work_yrs is now <num> 
 sapply(df_srl_col$PD_04_work_yrs, class)
@@ -135,4 +135,5 @@ df_srl_col_rec <- df_srl_col |>
 sapply(df_srl_col_rec$PD_07_ho_amount, class)
 
 # Check column PD_04_work_yrs visually
-View(df_srl_col_rec)
+# View(df_srl_col_rec)
+

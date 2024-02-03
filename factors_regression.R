@@ -14,13 +14,13 @@ colnames(wla_f1)[1] <- "wla_f1"
 srl_f_f1 <- subset_srl_f |>
   select(
     c(
-      "SRL_F_26_spec_strategies",
-      "SRL_F_23_question_self",
-      "SRL_F_25_past_strategies",
-      "SRL_F_21_goals_time_learn",
-      "SRL_F_22_deadlines",
-      "SRL_F_20_long_term_goals",
-      "SRL_F_24_dif_ways_solve"
+      "SRL_F_19_spec_strategies",
+      "SRL_F_16_question_self",
+      "SRL_F_18_past_strategies",
+      "SRL_F_14_goals_time_learn",
+      "SRL_F_15_deadlines",
+      "SRL_F_13_long_term_goals",
+      "SRL_F_17_dif_ways_solve"
     ),
   )
 
@@ -35,10 +35,10 @@ colnames(srl_f_f1)[1] <- "srl_f_f1"
 srl_f_f2 <- subset_srl_f |>
   select(
     c(
-      "SRL_F_30_difficulties_calm",
-      "SRL_F_31_problem_solutions",
-      "SRL_F_32_handle_whatever",
-      "SRL_F_33_job_exp_future"
+      "SRL_F_48_difficulties_calm",
+      "SRL_F_49_problem_solutions",
+      "SRL_F_50_handle_whatever",
+      "SRL_F_51_job_exp_future"
     ),
   )
 
@@ -53,9 +53,9 @@ colnames(srl_f_f2)[1] <- "srl_f_f2"
 srl_f_f3 <- subset_srl_f |>
   select(
     c(
-      "SRL_F_34_self_goals_set",
-      "SRL_F_35_job_demands",
-      "SRL_F_19_personal_standards"
+      "SRL_F_52_self_goals_set",
+      "SRL_F_53_job_demands",
+      "SRL_F_12_personal_standards"
     ),
   )
 
@@ -70,9 +70,9 @@ colnames(srl_f_f3)[1] <- "srl_f_f3"
 srl_f_f4 <- subset_srl_f |>
   select(
     c(
-      "SRL_F_28_learn_new",
-      "SRL_F_29_learning_important",
-      "SRL_F_27_apply_learned"
+      "SRL_F_21_learn_new",
+      "SRL_F_22_learning_important",
+      "SRL_F_20_apply_learned"
     ),
   )
 
@@ -89,12 +89,12 @@ colnames(srl_f_f4)[1] <- "srl_f_f4"
 srl_p_f1 <- subset_srl_p |>
   select(
     c(
-      "SRL_P_50_lookup_unsure",
-      "SRL_P_51_knowl_gaps",
-      "SRL_P_52_challenge_job",
-      "SRL_P_43_collect_info",
-      "SRL_P_42_rel_knowl_now_past",
-      "SRL_P_44_ideas_prev_exp"
+      "SRL_P_37_lookup_unsure",
+      "SRL_P_38_knowl_gaps",
+      "SRL_P_39_challenge_job",
+      "SRL_P_30_collect_info",
+      "SRL_P_29_rel_knowl_now_past",
+      "SRL_P_31_ideas_prev_exp"
     ),
   )
 
@@ -109,12 +109,12 @@ colnames(srl_p_f1)[1] <- "srl_p_f1"
 srl_p_f2 <- subset_srl_p |>
   select(
     c(
-      "SRL_P_36_plan_learning_goals",
-      "SRL_P_41_organize_time",
-      "SRL_P_37_rel_learn_now_past",
-      "SRL_P_38_change_strategies",
-      "SRL_P_39_make_notes",
-      "SRL_P_40_meaning_signif_info"
+      "SRL_P_23_plan_learning_goals",
+      "SRL_P_28_organize_time",
+      "SRL_P_24_rel_learn_now_past",
+      "SRL_P_25_change_strategies",
+      "SRL_P_26_make_notes",
+      "SRL_P_27_meaning_signif_info"
     ),
   )
 
@@ -129,9 +129,9 @@ colnames(srl_p_f2)[1] <- "srl_p_f2"
 srl_p_f3 <- subset_srl_p |>
   select(
     c(
-      "SRL_P_46_play_ideas",
-      "SRL_P_45_resources_start_pt",
-      "SRL_P_47_alt_ways_tasks"
+      "SRL_P_33_play_ideas",
+      "SRL_P_32_resources_start_pt",
+      "SRL_P_34_alt_ways_tasks"
     ),
   )
 
@@ -148,9 +148,9 @@ colnames(srl_p_f3)[1] <- "srl_p_f3"
 srl_sr_f1 <- subset_srl_sr |>
   select(
     c(
-      "SRL_SR_59_things_learned_team",
-      "SRL_SR_60_new_info_impact",
-      "SRL_SR_58_big_picture"
+      "SRL_SR_46_things_learned_team",
+      "SRL_SR_47_new_info_impact",
+      "SRL_SR_45_big_picture"
     ),
   )
 
@@ -165,9 +165,9 @@ colnames(srl_sr_f1)[1] <- "srl_sr_f1"
 srl_sr_f2 <- subset_srl_sr |>
   select(
     c(
-      "SRL_SR_56_dif_ways_task_done",
-      "SRL_SR_57_things_learned_finish",
-      "SRL_SR_55_task_done_well_learned"
+      "SRL_SR_43_dif_ways_task_done",
+      "SRL_SR_44_things_learned_finish",
+      "SRL_SR_42_task_done_well_learned"
     ),
   )
 
@@ -219,19 +219,3 @@ factors_regression <- as.data.frame(
 
 factors_regression
 
-# rm(
-#   wla_f1,
-#   srl_f_f1,
-#   srl_f_f2,
-#   srl_f_f3,
-#   srl_f_f4,
-#   srl_p_f1,
-#   srl_p_f2,
-#   srl_p_f3,
-#   srl_sr_f1,
-#   srl_sr_f2,
-#   wlc_f1,
-#   se
-# )
-# 
-# View(factors_regression)

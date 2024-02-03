@@ -9,3 +9,24 @@ upper_conv_valid <- as.data.frame(upper_conv_valid)
 upper_conv_valid
 
 print(xtable(upper_conv_valid), type = "html")
+
+
+
+save_correlation_matrix(df = factors_regression,
+                        filename = 'cor_matrix_lower.csv',
+                        digits = 3,
+                        use = 'lower')
+
+install.packages("cocor")
+library(cocor)
+
+# Fischers z-Test
+# H1: SRL score <-> WLA
+cocor.indep.groups(
+  0.61,
+  0.459,
+  170,
+  122)
+
+# Korrelationen unterscheiden sich statistisch nicht signifikant
+# Konvergente Validität ist vergleichbar

@@ -6,44 +6,46 @@ library(psych)
 
 # wla subset
 subset_wla <- df_srl_imp_mean_comb |> select(c(starts_with("WLA"),))
-View(subset_wla)
+# View(subset_wla)
 
 # srl subset
 subset_srl <- df_srl_imp_mean_comb |> select(c(starts_with("SRL"),))
-View(subset_srl)
+# View(subset_srl)
 
 # srl_f subset
 subset_srl_f <- df_srl_imp_mean_comb |> select(c(starts_with("SRL_F"),))
-View(subset_srl_f)
+# View(subset_srl_f)
 
 # srl_p subset
 subset_srl_p <- df_srl_imp_mean_comb |> select(c(starts_with("SRL_P"),))
-View(subset_srl_p)
+# View(subset_srl_p)
 
 # srl_sr subset
 subset_srl_sr <- df_srl_imp_mean_comb |> select(c(starts_with("SRL_SR"),))
-View(subset_srl_sr)
+# View(subset_srl_sr)
 
 # wlc subset
 subset_wlc <- df_srl_imp_mean_comb |> select(c(starts_with("WLC"),))
-View(subset_wlc)
+# View(subset_wlc)
 
 # se subset
 subset_se <- df_srl_imp_mean_comb |> select(c(starts_with("SE"),))
-View(subset_se)
+# View(subset_se)
 
 # Descriptive check of subsets
-describe(subset_se)
-describe(subset_srl_f)
-describe(subset_srl_p)
-describe(subset_srl_sr)
-describe(subset_wla)
-describe(subset_wlc)
+descr_srl_f <- as.data.frame(describe(rowMeans(subset_srl_f)))
+# describe(subset_srl_f)
+descr_srl_p <- as.data.frame(describe(rowMeans(subset_srl_p)))
+descr_srl_sr <- as.data.frame(describe(rowMeans(subset_srl_sr)))
+descr_wla <- as.data.frame(describe(rowMeans(subset_wla)))
+descr_wlc <- as.data.frame(describe(rowMeans(subset_wlc)))
+descr_se <- as.data.frame(describe(rowMeans(subset_se)))
 
 # Descriptive check of subsets
-summary(subset_se)
-summary(subset_srl_f)
-summary(subset_srl_p)
-summary(subset_srl_sr)
-summary(subset_wla)
-summary(subset_wlc)
+descr_srl_f_vars <- as.data.frame(describe(subset_srl_f))
+# describe(subset_srl_f)
+descr_srl_p_vars <- as.data.frame(describe(subset_srl_p))
+descr_srl_sr_vars <- as.data.frame(describe(subset_srl_sr))
+descr_wla_vars <- as.data.frame(describe(subset_wla))
+descr_wlc_vars <- as.data.frame(describe(subset_wlc))
+descr_se_vars <- as.data.frame(describe(subset_se))

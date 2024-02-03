@@ -84,4 +84,4 @@ df_srl_col <- rename(
 names(df_srl_col)
 
 # Check col names in data frame View
-View(df_srl_col)
+# View(df_srl_col)

@@ -17,18 +17,20 @@ percentmissing <- function(data) {
 
 nrow(df_srl_col_rec) # Test subjects before
 
-# Create a data.frame that contains all data records with a total 
+# Create a data.frame that contains all data records with a total
 # missing percentage of less than 90 percent
 df_srl_col_rec_na <-
   df_srl_col_rec[percentmissing(df_srl_col_rec[,1:76]) < 90, ]
 
 nrow(df_srl_col_rec_na) # Test subjects after
-View(df_srl_col_rec_na)
+# View(df_srl_col_rec_na)
 
-# Impute missings in columns 9:76 with mean method
+
+
+# Impute missings in columns 9:76 with median method
 # The hereby generated data frame contains all scales
 # apart from personal details
-df_srl_imp_mean <- impute_mean(df_srl_col_rec_na[,9:76])
+df_srl_imp_mean <- impute_median(df_srl_col_rec_na[,9:76])
 
 # Round all <num> values from float to integer values
 df_srl_imp_mean |>
@@ -41,7 +43,7 @@ df_srl_imp_mean <- trunc(df_srl_imp_mean)
 
 # Check if all columns are still <num>
 sapply(df_srl_imp_mean, class)
-View(df_srl_imp_mean)
+# View(df_srl_imp_mean)
 
 # Verify that there are no missings left in data frame containing all scales
 # apart from personal details
@@ -50,4 +52,5 @@ which(is.na(df_srl_imp_mean)==TRUE)
 
 # Combine columns 1:8 and 9:76 for there were no missings removed in cols 1:8
 df_srl_imp_mean_comb <- bind_cols(df_srl_col_rec_na[,1:8], df_srl_imp_mean)
-View(df_srl_imp_mean_comb)
+# View(df_srl_imp_mean_comb)
+
